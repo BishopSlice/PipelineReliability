@@ -1,0 +1,31 @@
+{
+  "description": "Creates a new transformation project.",
+  "path": "/v1/transformation-projects",
+  "method": "POST",
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "group_id": {
+        "type": "string",
+        "description": "The unique identifier for the group within the Fivetran system"
+      },
+      "type": {
+        "type": "string",
+        "description": "Transformation project type",
+        "enum": [
+          "DBT_CORE"
+        ]
+      },
+      "run_tests": {
+        "type": "boolean",
+        "description": "The boolean flag specifies if the project should be tested after creation or update operation"
+      }
+    },
+    "discriminator": {
+      "propertyName": "type",
+      "mapping": {
+        "DBT_CORE": "#/components/schemas/DBT_CORE_NewTransformationProjectRequest"
+      }
+    }
+  }
+}

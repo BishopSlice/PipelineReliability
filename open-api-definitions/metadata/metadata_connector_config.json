@@ -1,0 +1,16 @@
+{
+  "description": "Returns metadata of configuration parameters and authorization parameters for a specified connector type.",
+  "path": "/v1/metadata/connector-types/{service}",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "service",
+      "in": "path",
+      "required": true,
+      "description": "[The connector type](https://fivetran.com/docs/rest-api/getting-started#commonterms) identifier within the Fivetran system",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

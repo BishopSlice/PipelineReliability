@@ -1,0 +1,45 @@
+{
+  "description": "Creates a new Hybrid Deployment Agent in a group.",
+  "path": "/v1/hybrid-deployment-agents",
+  "method": "POST",
+  "request_body_schema": {
+    "required": [
+      "accept_terms",
+      "display_name",
+      "env_type"
+    ],
+    "type": "object",
+    "properties": {
+      "accept_terms": {
+        "type": "boolean",
+        "description": "Boolean, must be true to indicate that the caller accepts the Fivetran On-Prem Software License Addendum."
+      },
+      "auth_type": {
+        "type": "string",
+        "description": "Agent Auth Mode. Defines how agent should be authorised.",
+        "enum": [
+          "AUTO",
+          "MANUAL"
+        ]
+      },
+      "display_name": {
+        "type": "string",
+        "description": "Hybrid Deployment Agent display name."
+      },
+      "env_type": {
+        "type": "string",
+        "description": "Environment type.",
+        "enum": [
+          "DOCKER",
+          "PODMAN",
+          "KUBERNETES",
+          "SNOWPARK"
+        ]
+      },
+      "group_id": {
+        "type": "string",
+        "description": "The unique identifier for the group within your Fivetran account."
+      }
+    }
+  }
+}

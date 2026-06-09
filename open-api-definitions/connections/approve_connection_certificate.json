@@ -1,0 +1,33 @@
+{
+  "description": "Approves a certificate, so Fivetran trusts this certificate for a source database connection. \nThe connection setup tests will fail if a non-approved certificate is provided.\n\n> NOTE: This is only required for source connections based on the following databases: \n>  - [MySQL](https://fivetran.com/docs/connectors/databases/mysql#supportedservices)\n>  - [PostgreSQL](https://fivetran.com/docs/connectors/databases/postgresql#supportedservices)\n>  - [SQLServer](https://fivetran.com/docs/connectors/databases/sql-server#supportedservices)\n",
+  "path": "/v1/connections/{connectionId}/certificates",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "required": [
+      "encoded_cert",
+      "hash"
+    ],
+    "type": "object",
+    "properties": {
+      "hash": {
+        "type": "string",
+        "description": "Hash of the certificate."
+      },
+      "encoded_cert": {
+        "type": "string",
+        "description": "The certificate encoded in base64."
+      }
+    }
+  }
+}

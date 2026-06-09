@@ -1,0 +1,34 @@
+{
+  "description": "Returns the real-time column list for one source table by querying the source. The response includes the current enabled and hashed flags, and the patchable fields. \n\n> Note: This endpoint works only for an existing connection that is in a 'Connected' state.\n",
+  "path": "/v1/connections/{connectionId}/schemas/{schema}/tables/{table}/columns",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "schema",
+      "in": "path",
+      "required": true,
+      "description": "The database schema name within your destination",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "table",
+      "in": "path",
+      "required": true,
+      "description": "The table name within your database schema",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

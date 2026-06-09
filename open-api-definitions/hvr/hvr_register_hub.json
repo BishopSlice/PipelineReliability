@@ -1,0 +1,23 @@
+{
+  "description": "Register a new hub within your Fivetran account.",
+  "path": "/v1/hvr/register-hub",
+  "method": "POST",
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "fingerprint": {
+        "type": "string",
+        "description": "Installation fingerprint."
+      },
+      "port": {
+        "type": "integer",
+        "description": "Installation port.",
+        "format": "int32"
+      },
+      "hub_server_url": {
+        "type": "string",
+        "description": "URL of Hub server."
+      }
+    }
+  }
+}

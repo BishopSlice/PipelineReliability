@@ -1,0 +1,16 @@
+{
+  "description": "Deletes a system key from your Fivetran account.",
+  "path": "/v1/system-keys/{keyId}",
+  "method": "DELETE",
+  "parameters": [
+    {
+      "name": "keyId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the system key within your Fivetran account.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "reporter": "monitoring_system",
+  "notes": "The amount column in the source Google Sheet was changed from pure numeric to text values including currency suffixes (e.g. '1500 USD'). Fivetran re-inferred the column type as STRING on next sync. The downstream dbt transformation invoices_amounts now fails — CAST(amount AS FLOAT64) throws a Bad double value error on the text values.",
+  "signals": [
+    {
+      "signal_type": "schema_diff",
+      "observed_at": "2026-06-06T19:44:00Z",
+      "severity": "error",
+      "connection_id": "might_generate",
+      "group_id": "atrophy_coal",
+      "diff_type": "type_changed",
+      "schema_name": "dest_schema_cascade",
+      "table_name": "table_schema_cascade",
+      "column_name": "amount",
+      "old_value": "NUMERIC",
+      "new_value": "STRING",
+      "detected_at": "2026-06-06T19:43:00Z"
+    },
+    {
+      "signal_type": "transformation_event",
+      "observed_at": "2026-06-06T19:44:00Z",
+      "severity": "error",
+      "transformation_id": "serene_hide",
+      "connection_id": "might_generate",
+      "status": "failed",
+      "error_type": "type_mismatch",
+      "error_message": "Database Error in model invoices_amounts — Bad double value: CAST(amount AS FLOAT64) fails after column re-inferred as STRING",
+      "models_failed": ["invoices_amounts"]
+    }
+  ]
+}

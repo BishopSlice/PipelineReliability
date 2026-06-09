@@ -1,0 +1,25 @@
+{
+  "description": "Reloads the connection schema config for an existing connection within your Fivetran account.\n\n> NOTE: This method reloads the full schema from the connection's data source. It may take a long time to complete the request. The method execution speed depends on the schema size and the number of databases, tables, and columns.\n>\n> The response contains all known schemas and tables. Also, it contains columns whose state has ever been set by the user. For more information, see also the [Connection Schema config](https://fivetran.com/docs/rest-api/tutorials/connection-schema-configuration-use-cases) tutorial.\n",
+  "path": "/v1/connections/{connectionId}/schemas/reload",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "exclude_mode": {
+        "type": "string",
+        "description": "Specifies whether all schemas and tables will be enabled or disabled in the standard config. By specifying the `exclude_mode` parameter value, you can enable or disable syncing for all schemas and tables when reloading the connection schema config.\n\nWhen the default `PRESERVE` value is set, all selected schemas and tables in the standard config preserve their state.\n\nWhen the `EXCLUDE` value is set, the columns that haven't been updated by user yet are not excluded from the sync. Such columns may be present in the source and not displayed in the response, but they are considered to be included in the sync by default. If you enable syncing of their table, then all of these columns from the source will be synced in the next sync cycle. See also [Troubleshooting: How to enable syncs only for the columns you need](https://fivetran.com/docs/rest-api/tutorials/enable-sync-for-columns-you-need).\n"
+      }
+    }
+  }
+}

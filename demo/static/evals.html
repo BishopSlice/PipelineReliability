@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRE — Eval Dashboard</title>
+  <link rel="icon" href="/static/favicon.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f6f8fa;
+      --surface: #ffffff;
+      --surface-2: #f6f8fa;
+      --border: #d0d7de;
+      --text: #1f2328;
+      --text-muted: #656d76;
+      --blue: #0969da;
+      --green: #1a7f37;
+      --amber: #9a6700;
+      --red: #cf222e;
+      --purple: #8250df;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand { font-weight: 700; font-size: 0.95rem; color: var(--text); }
+    .brand span { color: var(--blue); }
+
+    nav a {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-left: 1.25rem;
+    }
+    nav a:hover { color: var(--blue); }
+    nav a.active { color: var(--blue); font-weight: 600; }
+
+    .page { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+
+    /* ── Summary cards ── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+    }
+
+    .stat-card .label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-card .value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .stat-card .sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* ── Chart grid ── */
+    .baselines-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .baselines-panel .bl-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.1rem;
+    }
+    .baselines-panel .bl-value { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .baselines-panel .bl-sub   { font-size: 0.68rem; color: var(--text-muted); }
+    .baselines-panel .bl-title {
+      font-size: 0.78rem; font-weight: 600; color: var(--text-muted);
+      flex: 0 0 auto; padding-right: 1rem; border-right: 1px solid var(--border);
+    }
+    .baselines-panel .bl-pending {
+      font-size: 0.8rem; color: var(--text-muted); font-style: italic;
+    }
+    .baselines-alert { color: var(--amber); font-weight: 600; }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+    }
+
+    .chart-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.75rem;
+    }
+
+    .chart-wrap { position: relative; height: 200px; }
+
+    /* ── Runs table ── */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: 420px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .table-scroll thead th {
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1;
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .table-header {
+      padding: 0.85rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .table-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+    }
+
+    .table-count {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 0.15rem 0.5rem;
+      border-radius: 20px;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    th {
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      padding: 0.6rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    td {
+      padding: 0.6rem 1.25rem;
+      font-size: 0.8rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg); }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-resolved  { background: rgba(26,127,55,0.1);  color: var(--green); }
+    .badge-escalated { background: rgba(154,103,0,0.1);  color: var(--amber); }
+    .badge-error     { background: rgba(207,34,46,0.1);  color: var(--red); }
+
+    .path-chip {
+      display: inline-block;
+      font-size: 0.68rem;
+      background: rgba(9,105,218,0.08);
+      color: var(--blue);
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      margin-right: 2px;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .refresh-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.78rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+    .refresh-btn:hover { border-color: var(--blue); color: var(--blue); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="brand"><span>PRE</span> — Pipeline Reliability Engineer</span>
+    <nav>
+      <a href="/">Landing</a>
+      <a href="/demo">Demo</a>
+      <a href="/evals" class="active">Evals</a>
+    </nav>
+  </header>
+
+  <div class="page" id="app">
+
+    <!-- Summary cards -->
+    <div class="summary-grid" id="summary"></div>
+
+    <!-- Baselines panel -->
+    <div id="baselines"></div>
+
+    <!-- Charts -->
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-title">Agent Dispatch Frequency</div>
+        <div class="chart-wrap"><canvas id="chartAgents"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Per-Agent Avg Latency (s)</div>
+        <div class="chart-wrap"><canvas id="chartAgentLatency"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Runs table -->
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-title">All Runs</span>
+        <div style="display:flex;align-items:center;gap:.75rem">
+          <span class="table-count" id="runCount">0 runs</span>
+          <button class="refresh-btn" onclick="load()">↻ Refresh</button>
+        </div>
+      </div>
+      <div id="tableWrap"></div>
+    </div>
+
+  </div>
+
+  <script>
+  const AGENT_COLORS = {
+    connector_agent:       '#0969da',
+    schema_agent:          '#8250df',
+    transformation_agent:  '#cf222e',
+    data_quality_agent:    '#1a7f37',
+    post_fix_validation:   '#9a6700',
+  };
+
+  let charts = {};
+
+  function fmt(ms) {
+    if (ms == null) return '—';
+    return (ms / 1000).toFixed(1) + 's';
+  }
+
+  function fmtCost(v) {
+    if (v == null || v === 0) return '—';
+    return '$' + v.toFixed(4);
+  }
+
+  function fmtTokens(n) {
+    if (!n) return '—';
+    return n >= 1000 ? (n / 1000).toFixed(1) + 'k' : n;
+  }
+
+  function buildSummary(runs) {
+    const total = runs.length;
+    const avgCost = total ? (runs.reduce((s, r) => s + (r.estimated_cost_usd || 0), 0) / total) : 0;
+    const hitlRuns = runs.filter(r => r.hitl_gate_count > 0).length;
+    const runsWithPhase = runs.filter(r => r.agent_phase_ms > 0);
+    const avgMonitor = runsWithPhase.length ? Math.round(runsWithPhase.reduce((s, r) => s + (r.monitoring_phase_ms || 0), 0) / runsWithPhase.length / 1000) : null;
+    const avgAgent   = runsWithPhase.length ? Math.round(runsWithPhase.reduce((s, r) => s + (r.agent_phase_ms || 0), 0) / runsWithPhase.length / 1000) : null;
+    const runsWithTtft = runs.filter(r => r.first_event_latency_ms > 0);
+    const avgTtft = runsWithTtft.length ? Math.round(runsWithTtft.reduce((s, r) => s + (r.first_event_latency_ms || 0), 0) / runsWithTtft.length / 1000 * 10) / 10 : null;
+    const runsWithOtps = runs.filter(r => r.otps > 0);
+    const avgOtps = runsWithOtps.length ? Math.round(runsWithOtps.reduce((s, r) => s + (r.otps || 0), 0) / runsWithOtps.length) : null;
+
+    const cards = [
+      { label: 'Total Runs',                value: total,                                          sub: 'all connections' },
+      { label: 'Avg Monitoring Time',        value: avgMonitor != null ? avgMonitor + 's' : '—',   sub: 'before orchestrator' },
+      { label: 'Avg Agent Run Time',         value: avgAgent   != null ? avgAgent + 's'   : '—',   sub: 'orchestrator and beyond' },
+      { label: 'Avg Cost Per Run',           value: '$' + avgCost.toFixed(4),                       sub: 'estimated USD' },
+      { label: 'TTFT',                       value: avgTtft != null ? avgTtft + 's' : '—',         sub: 'time to first token' },
+      { label: 'OTPS',                       value: avgOtps != null ? avgOtps + ' tok/s' : '—',    sub: 'output tokens per second' },
+      { label: 'HITL Runs',                  value: hitlRuns,                                       sub: 'runs with approval gate' },
+    ];
+
+    document.getElementById('summary').innerHTML = cards.map(c => `
+      <div class="stat-card">
+        <div class="label">${c.label}</div>
+        <div class="value">${c.value}</div>
+        <div class="sub">${c.sub}</div>
+      </div>
+    `).join('');
+  }
+
+  function buildCharts(runs) {
+    Object.values(charts).forEach(c => c.destroy());
+    charts = {};
+
+    // 1. Agent dispatch frequency
+    const agentCounts = {};
+    runs.forEach(r => {
+      (r.agent_dispatch_path || []).forEach(a => { agentCounts[a] = (agentCounts[a] || 0) + 1; });
+    });
+    const agentLabels = Object.keys(agentCounts);
+    charts.agents = new Chart(document.getElementById('chartAgents'), {
+      type: 'bar',
+      data: {
+        labels: agentLabels.map(a => a.replace('_agent', '').replace('_', ' ')),
+        datasets: [{ data: agentLabels.map(a => agentCounts[a]), backgroundColor: agentLabels.map(a => AGENT_COLORS[a] || '#656d76'), borderRadius: 4 }],
+      },
+      options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { font: { size: 11 } } }, x: { ticks: { font: { size: 11 } } } } },
+    });
+
+    // 2. Per-agent avg latency (D-49) — aggregate per_agent_duration_ms across all runs
+    const agentDurSums = {};
+    const agentDurCounts = {};
+    runs.forEach(r => {
+      const pad = r.per_agent_duration_ms || {};
+      Object.entries(pad).forEach(([agent, ms]) => {
+        agentDurSums[agent]   = (agentDurSums[agent] || 0) + ms;
+        agentDurCounts[agent] = (agentDurCounts[agent] || 0) + 1;
+      });
+    });
+    const durLabels = Object.keys(agentDurSums);
+    const durAvg = durLabels.map(a => Math.round((agentDurSums[a] / agentDurCounts[a]) / 1000 * 10) / 10);
+    if (durLabels.length) {
+      charts.agentLatency = new Chart(document.getElementById('chartAgentLatency'), {
+        type: 'bar',
+        data: {
+          labels: durLabels.map(a => a.replace('_agent', '').replace('_', ' ')),
+          datasets: [{ data: durAvg, backgroundColor: durLabels.map(a => AGENT_COLORS[a] || '#656d76'), borderRadius: 4, label: 'Avg latency (s)' }],
+        },
+        options: {
+          indexAxis: 'y',
+          plugins: { legend: { display: false } },
+          scales: { x: { beginAtZero: true, ticks: { font: { size: 11 } } }, y: { ticks: { font: { size: 11 } } } },
+        },
+      });
+    } else {
+      document.getElementById('chartAgentLatency').parentElement.innerHTML +=
+        '<div style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:0.8rem">Data available after first run</div>';
+    }
+  }
+
+  function buildTable(runs) {
+    document.getElementById('runCount').textContent = runs.length + ' run' + (runs.length !== 1 ? 's' : '');
+
+    if (runs.length === 0) {
+      document.getElementById('tableWrap').innerHTML = '<div class="empty">No runs yet — start a connection from the <a href="/demo" style="color:var(--blue)">demo page</a>.</div>';
+      return;
+    }
+
+    const rows = runs.map(r => {
+      const statusBadge = r.error_occurred
+        ? '<span class="badge badge-error">error</span>'
+        : r.status === 'resolved'
+          ? '<span class="badge badge-resolved">resolved</span>'
+          : '<span class="badge badge-escalated">escalated</span>';
+
+      const path = (r.agent_dispatch_path || [])
+        .map(a => `<span class="path-chip">${a.replace('_agent','').replace('post_fix_validation','pfv')}</span>`)
+        .join('');
+
+      const conf = r.confidence != null ? Math.round(r.confidence * 100) + '%' : '—';
+
+      const monMs  = r.monitoring_phase_ms || 0;
+      const agMs   = r.agent_phase_ms || 0;
+      const hasPhase = agMs > 0;
+      const ttft   = r.first_event_latency_ms ? (r.first_event_latency_ms / 1000).toFixed(1) + 's' : '—';
+      const otps   = r.otps ? r.otps.toFixed(1) : '—';
+      const ttcr   = fmt(r.duration_ms);
+
+      return `<tr>
+        <td style="font-family:monospace;font-size:0.75rem;color:var(--text-muted)">${r.run_id}</td>
+        <td style="font-family:monospace;font-size:0.8rem">${r.connector_id || '—'}</td>
+        <td>${statusBadge}</td>
+        <td>${r.root_cause_layer || '—'}</td>
+        <td>${conf}</td>
+        <td style="color:var(--text-muted)">${hasPhase ? fmt(monMs) : '—'}</td>
+        <td style="color:var(--blue);font-weight:600">${hasPhase ? fmt(agMs) : '—'}</td>
+        <td>${ttft}</td>
+        <td>${otps}</td>
+        <td>${ttcr}</td>
+        <td>${fmtCost(r.estimated_cost_usd)}</td>
+        <td>${r.tool_call_count || 0}</td>
+        <td>${r.hitl_gate_count || 0}</td>
+        <td>${path || '—'}</td>
+        <td style="font-size:0.72rem;color:var(--text-muted)">${r.timestamp ? r.timestamp.slice(0,16).replace('T',' ') : '—'}</td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('tableWrap').innerHTML = `
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Run ID</th><th>Connection</th><th>Status</th><th>Layer</th>
+              <th>Conf</th><th>Monitor</th><th>Agent</th><th>TTFT</th><th>OTPS</th><th>TTCR</th>
+              <th>Cost</th><th>Tools</th><th>Gates</th><th>Agent Path</th><th>Time</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  }
+
+  function buildBaselines(b) {
+    const el = document.getElementById('baselines');
+    if (!b || !b.ready) {
+      const have = b ? b.run_count : 0;
+      const need = b ? b.min_runs : 20;
+      el.innerHTML = `<div class="baselines-panel">
+        <div class="bl-title">P95 Baselines</div>
+        <div class="bl-pending">Baselines available after ${need} completed runs — ${have} so far. Run more connections to unlock.</div>
+      </div>`;
+      return;
+    }
+    const fmtB = (ms) => ms >= 60000 ? (ms/60000).toFixed(1)+'m' : (ms/1000).toFixed(1)+'s';
+    const safe = (ms) => ms ? fmtB(ms) : '—';
+    const safeOtps = (v) => v ? v.toFixed(1) + ' tok/s' : '—';
+    el.innerHTML = `<div class="baselines-panel">
+      <div class="bl-title">P95 / P50<br><span style="font-weight:400;font-size:0.68rem">${b.run_count} runs</span></div>
+      <div>
+        <div class="bl-label">Monitor</div>
+        <div class="bl-value" style="color:#3b82f6">${safe(b.p95_monitoring_ms)}</div>
+        <div class="bl-sub">P50: ${safe(b.p50_monitoring_ms)}</div>
+      </div>
+      <div>
+        <div class="bl-label">Agent</div>
+        <div class="bl-value" style="color:#0969da">${safe(b.p95_agent_ms)}</div>
+        <div class="bl-sub">P50: ${safe(b.p50_agent_ms)}</div>
+      </div>
+      <div>
+        <div class="bl-label">TTFT</div>
+        <div class="bl-value">${safe(b.p95_ttft_ms)}</div>
+        <div class="bl-sub">P50: ${safe(b.p50_ttft_ms)}</div>
+      </div>
+      <div>
+        <div class="bl-label">OTPS</div>
+        <div class="bl-value">${safeOtps(b.p95_otps)}</div>
+        <div class="bl-sub">P50: ${safeOtps(b.p50_otps)}</div>
+      </div>
+      <div>
+        <div class="bl-label">TTCR (total)</div>
+        <div class="bl-value">${fmtB(b.p95_duration_ms)}</div>
+        <div class="bl-sub">alert: ${fmtB(b.p95_duration_ms * 2)}</div>
+      </div>
+      <div style="margin-left:auto;font-size:0.72rem;color:var(--text-muted);max-width:180px;line-height:1.5">
+        Runs > 2×P95 TTCR log a server warning. TTFT and OTPS populate after first run.
+      </div>
+    </div>`;
+  }
+
+  async function load() {
+    try {
+      const [runsResp, baselinesResp] = await Promise.all([
+        fetch('/api/runs'),
+        fetch('/api/baselines'),
+      ]);
+      const runs      = await runsResp.json();
+      const baselines = await baselinesResp.json();
+      buildSummary(runs);
+      buildBaselines(baselines);
+      buildCharts(runs);
+      buildTable(runs);
+    } catch (e) {
+      document.getElementById('tableWrap').innerHTML = `<div class="empty">Failed to load runs: ${e.message}</div>`;
+    }
+  }
+
+  load();
+  </script>
+</body>
+</html>

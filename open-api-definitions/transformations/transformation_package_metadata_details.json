@@ -1,0 +1,16 @@
+{
+  "description": "Returns the metadata details of the Quickstart transformation package if a valid identifier is provided.",
+  "path": "/v1/transformations/package-metadata/{package_definition_id}",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "package_definition_id",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the Quickstart transformation package definition within the Fivetran system",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

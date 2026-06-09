@@ -1,0 +1,16 @@
+{
+  "description": "Removes a team from your Fivetran account",
+  "path": "/v1/teams/{teamId}/role",
+  "method": "DELETE",
+  "parameters": [
+    {
+      "name": "teamId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the team within the account.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

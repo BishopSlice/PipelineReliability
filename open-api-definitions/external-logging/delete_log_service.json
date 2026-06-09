@@ -1,0 +1,16 @@
+{
+  "description": "Deletes a group-level [logging service](/docs/logs/external-logs) from your Fivetran account.",
+  "path": "/v1/external-logging/{logId}",
+  "method": "DELETE",
+  "parameters": [
+    {
+      "name": "logId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the log service within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

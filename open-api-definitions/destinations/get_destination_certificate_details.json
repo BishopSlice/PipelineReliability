@@ -1,0 +1,25 @@
+{
+  "description": "Returns details of the certificate approved for the specified destination with specified certificate hash.",
+  "path": "/v1/destinations/{destinationId}/certificates/{hash}",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "destinationId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the destination within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "hash",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier of the certificate (Base64URL encoded hash of the certificate).",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "description": "Deletes a group from your Fivetran account.",
+  "path": "/v1/groups/{groupId}",
+  "method": "DELETE",
+  "parameters": [
+    {
+      "name": "groupId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the group within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

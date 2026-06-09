@@ -1,0 +1,133 @@
+{
+  "description": "Updates connection parameters for an existing connection within your Fivetran account.\n\nThis endpoint requires at least one persistent configuration parameter to be specified (e.g., `sync_frequency`, `paused`, `config`, `auth`, `daily_sync_time`, `schema_status`).\n\n> IMPORTANT: Parameters like `trust_certificates`, `trust_fingerprints`, and `run_setup_tests` are test-control parameters that affect only the behavior of setup tests during the update and do not persist in the connection configuration; they cannot be used on their own. If you want to run setup tests without making configuration changes, use the POST `/v1/connections/{connectionId}/test` endpoint instead.\n",
+  "path": "/v1/connections/{connectionId}",
+  "method": "PATCH",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "config": {
+        "description": "The setup configuration. Check possible config formats in [create method](/docs/rest-api/api-reference/connections/create-connection/)"
+      },
+      "auth": {
+        "description": "The connector authorization settings. Check possible config formats in [create method](/docs/rest-api/api-reference/connections/create-connection/)"
+      },
+      "paused": {
+        "type": "boolean",
+        "description": "Specifies whether the connection is paused"
+      },
+      "trust_certificates": {
+        "type": "boolean",
+        "description": "Specifies whether we should trust the certificate automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic certificate trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a certificate is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination certificate](https://fivetran.com/docs/rest-api/certificates#approveadestinationcertificate)."
+      },
+      "trust_fingerprints": {
+        "type": "boolean",
+        "description": "Specifies whether we should trust the SSH fingerprint automatically during setup tests. The default value is FALSE. This parameter only affects the behavior of setup tests and does not persist in the connection configuration. When using the PATCH endpoint to update a connection, this parameter must be combined with `run_setup_tests=true` and at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). If you only want to run setup tests with automatic fingerprint trust, use the POST `/v1/connections/{connectionId}/test` endpoint instead. If a fingerprint is not trusted automatically during testing, it has to be approved with [Certificates Management API Approve a destination fingerprint](https://fivetran.com/docs/rest-api/certificates#approveadestinationfingerprint)."
+      },
+      "networking_method": {
+        "type": "string",
+        "enum": [
+          "Directly",
+          "PrivateLink",
+          "SshTunnel",
+          "ProxyAgent"
+        ]
+      },
+      "daily_sync_time": {
+        "type": "string",
+        "description": "The connection daily sync start time that we return only when the sync frequency is set to 1440 (which means 24 hours) and the daily_sync_time parameter was set using the Create a Connection or Update a Connection request"
+      },
+      "run_setup_tests": {
+        "type": "boolean",
+        "description": "Specifies whether the setup tests should be run automatically after updating the connection. The default value is TRUE. When using this parameter in a PATCH request, you must also include at least one persistent configuration parameter (e.g., `sync_frequency`, `paused`, `config`, `auth`). This parameter can be combined with `trust_certificates` or `trust_fingerprints` to automatically approve `certificates/fingerprints` during the test run. To run setup tests without making configuration changes, use the POST `/v1/connections/{connectionId}/test` endpoint instead."
+      },
+      "sync_frequency": {
+        "type": "integer",
+        "description": "The connection sync frequency in minutes",
+        "format": "int32",
+        "enum": [
+          "1",
+          "5",
+          "15",
+          "30",
+          "60",
+          "120",
+          "180",
+          "360",
+          "480",
+          "720",
+          "1440"
+        ]
+      },
+      "data_delay_threshold": {
+        "type": "integer",
+        "format": "int32"
+      },
+      "pause_after_trial": {
+        "type": "boolean",
+        "description": "Specifies whether the connection should be paused after the free trial period has ended"
+      },
+      "is_historical_sync": {
+        "type": "boolean",
+        "description": "The boolean specifying whether the connection should be triggered to re-sync all historical data. If you set this parameter to TRUE, the next scheduled sync will be historical. If the value is FALSE or not specified, the connection will not re-sync historical data. NOTE: When the value is TRUE, only the next scheduled sync will be historical, all subsequent ones will be incremental. This parameter is set to FALSE once the historical sync is completed."
+      },
+      "data_delay_sensitivity": {
+        "type": "string",
+        "enum": [
+          "LOW",
+          "NORMAL",
+          "HIGH",
+          "CUSTOM",
+          "SYNC_FREQUENCY"
+        ]
+      },
+      "schema_status": {
+        "type": "string",
+        "description": "Schema status.",
+        "enum": [
+          "blocked_on_capture",
+          "ready"
+        ]
+      },
+      "destination_configuration": {
+        "type": "object",
+        "properties": {
+          "virtual_warehouse": {
+            "type": "string",
+            "description": "Snowflake's virtual warehouse used in the connection"
+          }
+        }
+      },
+      "schedule_type": {
+        "type": "string",
+        "description": "The connection schedule configuration type. Supported values: auto, manual",
+        "enum": [
+          "auto",
+          "manual"
+        ]
+      },
+      "private_link_id": {
+        "type": "string",
+        "description": "The unique identifier for the self-served private link that is used by the connection"
+      },
+      "proxy_agent_id": {
+        "type": "string",
+        "description": "The unique identifier for the proxy agent within the Fivetran system"
+      },
+      "hybrid_deployment_agent_id": {
+        "type": "string",
+        "description": "The unique identifier for the hybrid deployment agent within the Fivetran system. If not specified, the agent ID from the destination will be used"
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "description": "Returns Hybrid Deployment Agent Details.",
+  "path": "/v1/hybrid-deployment-agents/{agentId}",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "agentId",
+      "in": "path",
+      "required": true,
+      "description": "Hybrid Deployment Agent Id",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

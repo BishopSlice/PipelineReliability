@@ -1,0 +1,35 @@
+{
+  "description": "Returns the list of approved certificates for the specified destination.",
+  "path": "/v1/destinations/{destinationId}/certificates",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "destinationId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the destination within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "cursor",
+      "in": "query",
+      "required": false,
+      "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
+      "schema": {
+        "type": "integer",
+        "format": "int32"
+      }
+    }
+  ]
+}

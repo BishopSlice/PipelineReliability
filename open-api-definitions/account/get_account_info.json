@@ -1,0 +1,5 @@
+{
+  "description": "Returns information about current account from API key.",
+  "path": "/v1/account/info",
+  "method": "GET"
+}

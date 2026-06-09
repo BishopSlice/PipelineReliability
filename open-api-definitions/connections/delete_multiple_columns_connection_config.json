@@ -1,0 +1,61 @@
+{
+  "description": "Mark multiple blocked columns for deletion from your destination tables. The columns will be dropped during the next sync.",
+  "path": "/v1/connections/{connectionId}/schemas/drop-columns",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "required": [
+      "schemas"
+    ],
+    "type": "object",
+    "properties": {
+      "schemas": {
+        "title": "Schemas",
+        "type": "object",
+        "properties": {
+          "schema": {
+            "required": [
+              "tables"
+            ],
+            "type": "object",
+            "properties": {
+              "tables": {
+                "title": "Tables",
+                "type": "object",
+                "properties": {
+                  "table": {
+                    "required": [
+                      "columns"
+                    ],
+                    "type": "object",
+                    "properties": {
+                      "columns": {
+                        "type": "array",
+                        "description": "The set of columns within your table schema config. The `columns` object in the response contains the columns whose `enabled` value has been set by the user after the initial sync.",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "description": "The set of tables within your database schema config."
+              }
+            }
+          }
+        },
+        "description": "The set of schemas within your connection schema config."
+      }
+    }
+  }
+}

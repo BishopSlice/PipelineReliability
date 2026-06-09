@@ -1,0 +1,33 @@
+{
+  "description": "Approves a fingerprint, enabling Fivetran to trust it for a destination database and establish connections via an SSH tunnel.",
+  "path": "/v1/destinations/{destinationId}/fingerprints",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "destinationId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the destination within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "required": [
+      "hash",
+      "public_key"
+    ],
+    "type": "object",
+    "properties": {
+      "hash": {
+        "type": "string",
+        "description": "Hash of the fingerprint."
+      },
+      "public_key": {
+        "type": "string",
+        "description": "The SSH public key."
+      }
+    }
+  }
+}

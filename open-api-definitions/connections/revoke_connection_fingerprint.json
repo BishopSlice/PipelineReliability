@@ -1,0 +1,25 @@
+{
+  "description": "Revokes a fingerprint, so Fivetran no longer trusts it while connecting to the source database through an SSH tunnel.",
+  "path": "/v1/connections/{connectionId}/fingerprints/{hash}",
+  "method": "DELETE",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "hash",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier of the fingerprint (Base64URL encoded hash of the fingerprint).",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

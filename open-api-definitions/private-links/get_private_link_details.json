@@ -1,0 +1,16 @@
+{
+  "description": "Returns a private link object if a valid identifier was provided.",
+  "path": "/v1/private-links/{privateLinkId}",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "privateLinkId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the private link within the Fivetran system",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

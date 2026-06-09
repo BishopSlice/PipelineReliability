@@ -1,0 +1,25 @@
+{
+  "description": "Revokes a certificate, so Fivetran no longer trusts it while connecting to the destination database.",
+  "path": "/v1/destinations/{destinationId}/certificates/{hash}",
+  "method": "DELETE",
+  "parameters": [
+    {
+      "name": "destinationId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the destination within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "hash",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier of the certificate (Base64URL encoded hash of the certificate).",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

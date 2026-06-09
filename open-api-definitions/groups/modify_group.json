@@ -1,0 +1,25 @@
+{
+  "description": "Updates information for an existing group within your Fivetran account.",
+  "path": "/v1/groups/{groupId}",
+  "method": "PATCH",
+  "parameters": [
+    {
+      "name": "groupId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the group within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The name of the group within your account."
+      }
+    }
+  }
+}

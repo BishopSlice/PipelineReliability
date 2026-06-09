@@ -1,0 +1,33 @@
+{
+  "description": "Adds a user membership in a group.",
+  "path": "/v1/users/{userId}/groups",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "userId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the user within the account.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "required": [
+      "id",
+      "role"
+    ],
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "The membership entity unique identifier"
+      },
+      "role": {
+        "type": "string",
+        "description": "The role that you would like to assign to the user "
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "description": "Runs the setup tests for an existing destination within your Fivetran account.",
+  "path": "/v1/destinations/{destinationId}/test",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "destinationId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the destination within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "trust_certificates": {
+        "type": "boolean"
+      },
+      "trust_fingerprints": {
+        "type": "boolean"
+      }
+    }
+  }
+}

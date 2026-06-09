@@ -1,0 +1,32 @@
+{
+  "description": "Assigns a role for a user in a team.",
+  "path": "/v1/teams/{teamId}/users",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "teamId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the team within the account.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "required": [
+      "user_id"
+    ],
+    "type": "object",
+    "properties": {
+      "user_id": {
+        "type": "string",
+        "description": "The unique identifier of user"
+      },
+      "role": {
+        "type": "string",
+        "description": "The user's role within the team"
+      }
+    }
+  }
+}

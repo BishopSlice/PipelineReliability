@@ -1,0 +1,16 @@
+{
+  "description": "This endpoint allows you to delete an existing webhook with a given identifier",
+  "path": "/v1/webhooks/{webhookId}",
+  "method": "DELETE",
+  "parameters": [
+    {
+      "name": "webhookId",
+      "in": "path",
+      "required": true,
+      "description": "The webhook ID",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

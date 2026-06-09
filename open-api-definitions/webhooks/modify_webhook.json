@@ -1,0 +1,40 @@
+{
+  "description": "The endpoint allows you to update the existing webhook with a given identifier",
+  "path": "/v1/webhooks/{webhookId}",
+  "method": "PATCH",
+  "parameters": [
+    {
+      "name": "webhookId",
+      "in": "path",
+      "required": true,
+      "description": "The webhook ID",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "url": {
+        "type": "string",
+        "description": "The endpoint URL where webhook events will be delivered."
+      },
+      "events": {
+        "type": "array",
+        "description": "List of event types that trigger the webhook.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "active": {
+        "type": "boolean",
+        "description": "Indicates if the webhook is enabled to send events immediately upon occurrence."
+      },
+      "secret": {
+        "type": "string",
+        "description": "A secret string used to sign webhook payloads for verification."
+      }
+    }
+  }
+}

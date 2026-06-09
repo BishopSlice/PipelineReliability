@@ -1,0 +1,25 @@
+{
+  "description": "Returns details of a user membership in group.",
+  "path": "/v1/users/{userId}/groups/{groupId}",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "userId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the user within the account.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "groupId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the group within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

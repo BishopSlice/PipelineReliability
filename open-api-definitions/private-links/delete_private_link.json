@@ -1,0 +1,16 @@
+{
+  "description": "Deletes a private link from your Fivetran account.",
+  "path": "/v1/private-links/{privateLinkId}",
+  "method": "DELETE",
+  "parameters": [
+    {
+      "name": "privateLinkId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the private link within the Fivetran system",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

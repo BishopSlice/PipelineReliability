@@ -1,0 +1,28 @@
+{
+  "description": "Updates information for an existing group-level [logging service](/docs/logs/external-logs) within your Fivetran account.",
+  "path": "/v1/external-logging/{logId}",
+  "method": "PATCH",
+  "parameters": [
+    {
+      "name": "logId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the log service within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "description": "The boolean value specifying whether the log service is enabled."
+      },
+      "config": {
+        "type": "object"
+      }
+    }
+  }
+}

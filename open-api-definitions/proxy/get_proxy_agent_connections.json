@@ -1,0 +1,35 @@
+{
+  "description": "Returns all connections attached to the specified proxy agent within your Fivetran account.",
+  "path": "/v1/proxy/{agentId}/connections",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "agentId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the proxy agent within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "cursor",
+      "in": "query",
+      "required": false,
+      "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
+      "schema": {
+        "type": "integer",
+        "format": "int32"
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "description": "Adds a team as a member of a group.",
+  "path": "/v1/teams/{teamId}/groups",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "teamId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the team within the account.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "required": [
+      "id",
+      "role"
+    ],
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "The group unique identifier"
+      },
+      "role": {
+        "type": "string",
+        "description": "The team's role"
+      }
+    }
+  }
+}

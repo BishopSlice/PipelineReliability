@@ -1,0 +1,37 @@
+{
+  "description": "Updates user membership in a connection.",
+  "path": "/v1/users/{userId}/connections/{connectionId}",
+  "method": "PATCH",
+  "parameters": [
+    {
+      "name": "userId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the user within the account.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "required": [
+      "role"
+    ],
+    "type": "object",
+    "properties": {
+      "role": {
+        "type": "string",
+        "description": "The role that you would like to assign to the user "
+      }
+    }
+  }
+}

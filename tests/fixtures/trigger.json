@@ -1,0 +1,16 @@
+{
+  "reporter": "monitoring_system",
+  "signals": [
+    {
+      "signal_type": "sync_status",
+      "observed_at": "2026-06-06T19:37:00Z",
+      "severity": "error",
+      "status": "broken",
+      "connection_id": "amplify_sandpit",
+      "group_id": "atrophy_coal",
+      "error_code": "reconnect",
+      "error_message": "Unknown authentication or authorization failure — Fivetran cannot connect to source. Reauthorisation required.",
+      "rows_synced": 0
+    }
+  ]
+}

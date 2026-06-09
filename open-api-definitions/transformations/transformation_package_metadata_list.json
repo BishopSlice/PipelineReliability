@@ -1,0 +1,44 @@
+{
+  "description": "Returns a list of available Quickstart transformation package metadata details.",
+  "path": "/v1/transformations/package-metadata",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "service",
+      "in": "query",
+      "required": false,
+      "description": "Specify the service identifier to filter Quickstart packages by connection service",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "name",
+      "in": "query",
+      "required": false,
+      "description": "Specify the package name to filter Quickstart packages by name",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "cursor",
+      "in": "query",
+      "required": false,
+      "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
+      "schema": {
+        "type": "integer",
+        "format": "int32"
+      }
+    }
+  ]
+}

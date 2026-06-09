@@ -1,0 +1,16 @@
+{
+  "description": "Deletes a destination from your Fivetran account.",
+  "path": "/v1/destinations/{destinationId}",
+  "method": "DELETE",
+  "parameters": [
+    {
+      "name": "destinationId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the destination within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

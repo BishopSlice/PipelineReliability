@@ -1,0 +1,16 @@
+{
+  "description": "Delete a Hybrid Deployment Agent.",
+  "path": "/v1/hybrid-deployment-agents/{agentId}",
+  "method": "DELETE",
+  "parameters": [
+    {
+      "name": "agentId",
+      "in": "path",
+      "required": true,
+      "description": "Hybrid Deployment Agent Id",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

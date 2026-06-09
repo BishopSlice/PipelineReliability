@@ -1,0 +1,25 @@
+{
+  "description": "Returns the details of a user's membership in a connection.",
+  "path": "/v1/users/{userId}/connections/{connectionId}",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "userId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the user within the account.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

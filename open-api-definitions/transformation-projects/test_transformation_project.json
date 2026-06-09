@@ -1,0 +1,16 @@
+{
+  "description": "Triggers tests for an existing transformation project.",
+  "path": "/v1/transformation-projects/{projectId}/test",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "projectId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the transformation project within the Fivetran system",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

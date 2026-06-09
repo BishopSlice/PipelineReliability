@@ -1,0 +1,16 @@
+{
+  "description": "Returns a user object if a valid identifier was provided.",
+  "path": "/v1/users/{userId}",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "userId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the user within the account.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

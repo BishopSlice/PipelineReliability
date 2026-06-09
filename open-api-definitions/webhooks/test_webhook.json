@@ -1,0 +1,28 @@
+{
+  "description": "The endpoint allows you to test an existing webhook. It sends a webhook with a given identifier for a dummy connection with identifier _connection_1",
+  "path": "/v1/webhooks/{webhookId}/test",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "webhookId",
+      "in": "path",
+      "required": true,
+      "description": "The webhook ID",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "required": [
+      "event"
+    ],
+    "type": "object",
+    "properties": {
+      "event": {
+        "type": "string",
+        "description": "Type of event to be sent during webhook testing."
+      }
+    }
+  }
+}

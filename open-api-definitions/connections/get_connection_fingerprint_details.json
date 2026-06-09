@@ -1,0 +1,25 @@
+{
+  "description": "Returns SSH fingerprint details approved for specified connection with specified hash",
+  "path": "/v1/connections/{connectionId}/fingerprints/{hash}",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "hash",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier of the fingerprint (Base64URL encoded hash of the fingerprint).",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

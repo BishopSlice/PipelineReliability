@@ -1,0 +1,16 @@
+{
+  "description": "Deletes a connection from your Fivetran account.",
+  "path": "/v1/connections/{connectionId}",
+  "method": "DELETE",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

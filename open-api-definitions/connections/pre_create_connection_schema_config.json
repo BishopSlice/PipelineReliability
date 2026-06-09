@@ -1,0 +1,103 @@
+{
+  "description": "Configures a Connection Schema for a new connection before the schema is captured from the source.\n\n> Note: The response returns the exact settings provided in the request.\n\nAfter the initial sync, when the connection captures the schema from the source, Fivetran attempts to apply the specified settings to the actual schema.\nIf certain tables or columns cannot be excluded, the settings for those entities are ignored.\n",
+  "path": "/v1/connections/{connectionId}/schemas",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "required": [
+      "schemas"
+    ],
+    "type": "object",
+    "properties": {
+      "schemas": {
+        "type": "object",
+        "additionalProperties": {
+          "required": [
+            "enabled"
+          ],
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "The boolean value specifying whether the sync for the table into the destination is enabled."
+            },
+            "tables": {
+              "title": "Tables",
+              "type": "object",
+              "properties": {
+                "table": {
+                  "required": [
+                    "enabled"
+                  ],
+                  "type": "object",
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean",
+                      "description": "The boolean value specifying whether the sync for the table into the destination is enabled."
+                    },
+                    "columns": {
+                      "title": "Columns",
+                      "type": "object",
+                      "properties": {
+                        "column": {
+                          "required": [
+                            "enabled"
+                          ],
+                          "type": "object",
+                          "properties": {
+                            "enabled": {
+                              "type": "boolean",
+                              "description": "The boolean value specifying whether the sync for the table into the destination is enabled."
+                            },
+                            "hashed": {
+                              "type": "boolean",
+                              "description": "The boolean value specifying whether a column should be hashed"
+                            },
+                            "is_primary_key": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      },
+                      "description": "The set of columns within your table schema config. The `columns` object in the response contains the columns whose `enabled` value has been set by the user after the initial sync."
+                    },
+                    "sync_mode": {
+                      "type": "string",
+                      "description": "This field appears in the response if the connection supports switching sync modes for tables",
+                      "enum": [
+                        "SOFT_DELETE",
+                        "HISTORY",
+                        "LIVE"
+                      ]
+                    }
+                  }
+                }
+              },
+              "description": "The set of tables within your database schema config."
+            }
+          }
+        },
+        "description": "The set of schemas within your connection schema config."
+      },
+      "schema_change_handling": {
+        "type": "string",
+        "description": "The possible values for the schema_change_handling parameter are as follows: <br /> ALLOW_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are included in syncs <br /> ALLOW_COLUMNS - all new schemas and tables which appear in the source after the initial setup are excluded from syncs, but new columns are included <br /> BLOCK_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are excluded from syncs",
+        "enum": [
+          "ALLOW_ALL",
+          "ALLOW_COLUMNS",
+          "BLOCK_ALL"
+        ]
+      }
+    }
+  }
+}

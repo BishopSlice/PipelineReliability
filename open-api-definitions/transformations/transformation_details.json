@@ -1,0 +1,16 @@
+{
+  "description": "Returns a transformation details if a valid identifier is provided.",
+  "path": "/v1/transformations/{transformationId}",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "transformationId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the transformation within the Fivetran system",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

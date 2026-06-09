@@ -1,0 +1,28 @@
+{
+  "description": "Regenerate authentication for a Hybrid Deployment Agent.",
+  "path": "/v1/hybrid-deployment-agents/{agentId}/re-auth",
+  "method": "PATCH",
+  "parameters": [
+    {
+      "name": "agentId",
+      "in": "path",
+      "required": true,
+      "description": "Hybrid Deployment Agent Id",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "auth_type": {
+        "type": "string",
+        "enum": [
+          "AUTO",
+          "MANUAL"
+        ]
+      }
+    }
+  }
+}

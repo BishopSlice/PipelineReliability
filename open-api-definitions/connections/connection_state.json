@@ -1,0 +1,16 @@
+{
+  "description": "Returns the connection state. This endpoint is only supported for Function and Connection SDK connectors.",
+  "path": "/v1/connections/{connectionId}/state",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "description": "Runs the transformation if a valid identifier is provided.",
+  "path": "/v1/transformations/{transformationId}/run",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "transformationId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the transformation within the Fivetran system",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "full_refresh": {
+        "type": "boolean"
+      }
+    }
+  }
+}

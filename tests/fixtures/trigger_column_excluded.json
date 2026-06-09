@@ -1,0 +1,31 @@
+{
+  "reporter": "monitoring_system",
+  "notes": "The revenue column was excluded from sync via Fivetran schema config. The downstream dbt transformation transactions_net_revenue immediately failed — it references revenue which is no longer being synced to the destination.",
+  "signals": [
+    {
+      "signal_type": "schema_diff",
+      "observed_at": "2026-06-06T18:56:00Z",
+      "severity": "error",
+      "connection_id": "unusable_touched",
+      "group_id": "atrophy_coal",
+      "diff_type": "column_excluded",
+      "schema_name": "dest_column_excluded",
+      "table_name": "table_column_excluded",
+      "column_name": "revenue",
+      "old_value": "INCLUDED",
+      "new_value": "EXCLUDED",
+      "detected_at": "2026-06-06T18:55:00Z"
+    },
+    {
+      "signal_type": "transformation_event",
+      "observed_at": "2026-06-06T18:56:00Z",
+      "severity": "error",
+      "transformation_id": "malnutrition_cornflake",
+      "connection_id": "unusable_touched",
+      "status": "failed",
+      "error_type": "missing_relation",
+      "error_message": "Database Error in model transactions_net_revenue — Unrecognized name: revenue",
+      "models_failed": ["transactions_net_revenue"]
+    }
+  ]
+}

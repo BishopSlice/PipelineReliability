@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRE</title>
+  <link rel="icon" href="/static/favicon.png" type="image/png">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f6f8fa;
+      --surface: #ffffff;
+      --surface-2: #f6f8fa;
+      --border: #d0d7de;
+      --border-subtle: #eaeef2;
+      --text: #1f2328;
+      --text-muted: #656d76;
+      --text-bright: #1f2328;
+      --blue: #0969da;
+      --green: #1a7f37;
+      --amber: #9a6700;
+      --amber-bg: rgba(154, 103, 0, 0.06);
+      --red: #cf222e;
+      --purple: #8250df;
+      --indigo: #6366f1;
+      --sidebar-w: 400px;
+    }
+
+    html, body { height: 100%; overflow: hidden; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      position: relative;
+      padding: 0 1.25rem;
+      height: 48px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+
+    .header-brand {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .header-brand .logo {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--text-bright);
+      letter-spacing: -0.02em;
+    }
+
+    .header-brand .logo span { color: var(--blue); }
+
+    .header-brand .tagline {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      border-left: 1px solid var(--border);
+      padding-left: 0.6rem;
+    }
+
+    .header-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-evals {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .nav-evals:hover { border-color: var(--blue); color: var(--blue); }
+
+    .pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* ── Layout ── */
+    .layout {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ── */
+    aside {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-section {
+      padding: 0.75rem 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .sidebar-section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
+      text-align: center;
+
+    }
+
+    /* ── Dashboard connection list (D-60) ── */
+    .conn-list {
+      display: flex;
+      flex-direction: column;
+      padding: 0.5rem 0.75rem;
+      gap: 0.35rem;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .conn-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.55rem 0.7rem;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: transparent;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .conn-row.running { border-color: var(--indigo); background: rgba(129,140,248,0.06); }
+
+    .conn-status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .conn-status-broken { background: var(--red); }
+    .conn-status-ok     { background: var(--green); }
+
+    .conn-info { flex: 1; min-width: 0; }
+
+    .conn-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-bright);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .conn-id {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sync-btn {
+      flex-shrink: 0;
+      padding: 0.3rem 0.65rem;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+    .sync-btn:hover    { opacity: 0.85; }
+    .sync-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Detected signals in sidebar (D-60) */
+    .conn-signals {
+      padding: 0.6rem 0.75rem;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .conn-signals-label {
+      font-size: 0.63rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+
+
+    .signal-chip {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.4rem;
+      align-items: baseline;
+      background: var(--surface-2);
+      border: 1px solid var(--border-subtle);
+      border-radius: 5px;
+      padding: 0.35rem 0.55rem;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 0.68rem;
+    }
+
+    .signal-chip-type {
+      color: var(--purple);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .signal-chip-detail {
+      color: var(--text-muted);
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.4;
+    }
+
+    .signal-chip-detail strong { color: var(--text); }
+
+    /* ── Main panel ── */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Result card new sections (D-60/D-62) */
+    .result-section-label {
+      font-size: 0.63rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-muted);
+      margin: 0.9rem 0 0.35rem;
+    }
+
+    .result-monitoring {
+      font-size: 0.78rem;
+      color: var(--text);
+      line-height: 1.5;
+      background: var(--surface-2);
+      border: 1px solid var(--border-subtle);
+      border-radius: 5px;
+      padding: 0.45rem 0.7rem;
+    }
+
+    .result-agent-path {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+
+    .result-agent-node {
+      font-size: 0.72rem;
+      padding: 0.15rem 0.5rem;
+      border: 1px solid var(--green);
+      color: var(--green);
+      border-radius: 4px;
+      background: rgba(63,185,80,0.06);
+      font-weight: 500;
+    }
+
+    .result-agent-arrow { color: var(--border); font-size: 0.8rem; }
+
+    .result-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+
+    .result-tool-chip {
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 0.67rem;
+      color: var(--purple);
+      background: rgba(188,140,255,0.08);
+      border: 1px solid rgba(188,140,255,0.2);
+      padding: 0.1rem 0.45rem;
+      border-radius: 3px;
+    }
+
+
+    /* ── Trace area ── */
+    .trace-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 1.25rem;
+      font-family: 'SFMono-Regular', Consolas, 'Courier New', monospace;
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+
+    .trace-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-muted);
+      gap: 0.5rem;
+    }
+
+    .trace-empty-icon { font-size: 2rem; opacity: 0.3; }
+
+    /* Trace event rows */
+    .ev { margin-bottom: 0.25rem; }
+
+    .ev-thinking {
+      color: var(--text-muted);
+      font-style: italic;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .ev-thinking-toggle {
+      color: var(--indigo);
+      font-size: 0.7rem;
+      margin-left: 0.4rem;
+    }
+
+    .ev-thinking-text { display: none; }
+    .ev-thinking-text.open { display: block; padding-left: 1.2rem; color: var(--text-muted); }
+
+    .ev-tool-call { color: var(--blue); }
+    .ev-tool-call::before { content: '→ '; }
+
+    .ev-tool-response { color: var(--green); }
+    .ev-tool-response::before { content: '✓ '; }
+
+    .ev-agent-dispatch {
+      color: var(--purple);
+      font-weight: 600;
+      padding: 0.2rem 0;
+    }
+    .ev-agent-dispatch::before { content: '◆ '; }
+
+    .ev-agent-complete { color: var(--green); }
+    .ev-agent-complete::before { content: '◆ '; }
+
+    .ev-text { color: var(--text); white-space: pre-wrap; }
+    .ev-status { color: var(--text-muted); font-style: italic; }
+    .ev-error { color: var(--red); }
+
+    /* Monitoring phase (D-60) */
+    .ev-monitoring { color: var(--text-muted); }
+    .ev-monitoring-ok::before    { content: '✓ '; color: var(--green); }
+    .ev-monitoring-run::before   { content: '⟳ '; }
+    .ev-monitoring-fail::before  { content: '✗ '; color: var(--red); }
+    .ev-monitoring-start::before { content: '→ '; }
+    .ev-monitoring-dispatch { color: var(--purple); font-weight: 600; }
+    .ev-monitoring-dispatch::before { content: '⚡ '; }
+    .ev-error::before { content: '✗ '; }
+
+    .ev-gate-decision-approve { color: var(--green); }
+    .ev-gate-decision-approve::before { content: '✓ '; }
+    .ev-gate-decision-deny { color: var(--red); }
+    .ev-gate-decision-deny::before { content: '✗ '; }
+
+    /* ── HITL Gate Card ── */
+    .gate-overlay {
+      padding: 0.75rem 1.25rem;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .gate-card {
+      background: rgba(154, 103, 0, 0.04);
+      border: 1px solid rgba(154, 103, 0, 0.35);
+      border-radius: 10px;
+      padding: 1.1rem 1.25rem;
+    }
+
+    .gate-header {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .gate-icon { font-size: 1.1rem; }
+    .gate-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--amber);
+      flex: 1;
+    }
+
+    .gate-tool-badge {
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 0.72rem;
+      background: rgba(210,153,34,0.12);
+      color: var(--amber);
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+    }
+
+    .gate-lead {
+      font-size: 0.9rem;
+      color: var(--text-bright);
+      line-height: 1.5;
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.9rem;
+      border-bottom: 1px solid rgba(210, 153, 34, 0.2);
+    }
+
+    .gate-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem 1.2rem;
+      margin-bottom: 1rem;
+      font-size: 0.78rem;
+    }
+
+    .gate-field label {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.2rem;
+    }
+
+    .gate-field p { color: var(--text); line-height: 1.45; }
+
+    .gate-actions {
+      display: flex;
+      gap: 0.65rem;
+    }
+
+    .btn-approve, .btn-deny {
+      flex: 1;
+      padding: 0.55rem 1rem;
+      border: none;
+      border-radius: 7px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: opacity 0.15s;
+    }
+
+    .btn-approve { background: var(--green); color: #ffffff; }
+    .btn-deny    { background: var(--surface); color: var(--red); border: 1px solid rgba(207,34,46,0.35); }
+    .btn-approve:hover, .btn-deny:hover { opacity: 0.82; }
+
+    /* ── Result card ── */
+    .result-section {
+      padding: 0.75rem 1.25rem;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .result-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+    }
+
+    .result-card.resolved { border-color: var(--green); background: rgba(26,127,55,0.04); }
+    .result-card.escalated { border-color: var(--amber); background: rgba(154,103,0,0.04); }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .result-status {
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.25rem 0.7rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .status-resolved  { background: rgba(26,127,55,0.12);  color: var(--green); }
+    .status-escalated { background: rgba(154,103,0,0.12);  color: var(--amber); }
+
+    .result-layer {
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      font-size: 0.75rem;
+      color: var(--purple);
+      background: rgba(188,140,255,0.1);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .result-confidence {
+      margin-left: auto;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .result-hypothesis {
+      font-size: 0.82rem;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 0.6rem;
+    }
+
+    .result-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .result-trace {
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .result-trace-title {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .trace-step {
+      display: grid;
+      grid-template-columns: 1.5rem 1fr;
+      gap: 0.3rem 0.5rem;
+      align-items: baseline;
+      margin-bottom: 0.35rem;
+      font-size: 0.75rem;
+    }
+
+    .trace-step-num {
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      font-family: 'SFMono-Regular', Consolas, monospace;
+      text-align: right;
+    }
+
+    .trace-step-text { color: var(--text); line-height: 1.5; }
+
+    .result-meta-row {
+      font-size: 0.75rem;
+      color: var(--text);
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .result-meta-row strong { color: var(--text); }
+
+    .result-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0.75rem 0;
+    }
+    .connect-card-btn {
+      display: inline-block;
+      margin-top: 0.65rem;
+      padding: 0.4rem 0.9rem;
+      background: var(--green);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 600;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+    .connect-card-btn:hover { opacity: 0.85; }
+
+    /* Confidence bar */
+    .conf-bar-wrap {
+      height: 4px;
+      background: var(--surface-2);
+      border-radius: 2px;
+      overflow: hidden;
+      margin: 0.5rem 0;
+    }
+
+    .conf-bar {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--green);
+      transition: width 0.6s ease;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #b0b7c0; }
+  </style>
+</head>
+<body x-data="demoApp()" x-init="init()">
+
+  <!-- Header -->
+  <header>
+    <div class="header-brand">
+      <a href="/" style="text-decoration:none">
+        <span class="logo"><span>PRE</span> — Pipeline Reliability Engineer</span>
+      </a>
+    </div>
+    <div class="header-right">
+      <div class="header-status" x-show="isRunning">
+        <div class="pulse"></div>
+        <span>Running incident response…</span>
+      </div>
+      <a href="/evals" class="nav-evals">
+        📊 Eval Dashboard
+      </a>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- Sidebar — dashboard connection list (D-60) -->
+    <aside>
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Connections Dashboard</div>
+      </div>
+
+      <div class="conn-list">
+        <template x-for="(s, idx) in scenarios" :key="s.id">
+          <div class="conn-row" :class="{ running: isRunning && activeScenario?.id === s.id }">
+            <div class="conn-status-dot conn-status-broken"></div>
+            <div class="conn-info">
+              <div class="conn-title" x-text="'Connection ' + (idx + 1)"></div>
+              <div class="conn-id" x-text="s.connector_id"></div>
+            </div>
+            <button
+              class="sync-btn"
+              :disabled="isRunning"
+              @click="runScenario(s)"
+              x-text="(isRunning && activeScenario?.id === s.id) ? 'Syncing…' : 'Sync'"
+            ></button>
+          </div>
+        </template>
+      </div>
+
+      <!-- Detected signals — populated live from monitoring phase (D-60) -->
+      <div class="conn-signals" x-show="signals?.signals?.length">
+        <div class="conn-signals-label">Detected Signals</div>
+        <template x-for="(sig, i) in (signals?.signals || [])" :key="i">
+          <div class="signal-chip" :title="JSON.stringify(sig, null, 2)">
+            <span class="signal-chip-type" x-text="sig.signal_type"></span>
+            <span class="signal-chip-detail" x-html="signalSummary(sig)"></span>
+          </div>
+        </template>
+      </div>
+    </aside>
+
+
+    <!-- Main -->
+    <main>
+
+
+      <!-- Trace area -->
+      <div class="trace-area" x-ref="trace">
+        <div class="trace-empty" x-show="events.length === 0 && !isRunning">
+          <div class="trace-empty-icon">⚡</div>
+          <span>Click Sync on a connection to begin</span>
+        </div>
+
+        <template x-for="ev in events" :key="ev.id">
+          <div class="ev" x-html="renderEvent(ev)"></div>
+        </template>
+      </div>
+
+      <!-- HITL Gate Card -->
+      <div class="gate-overlay" x-show="gateData" x-transition>
+        <div class="gate-card" x-show="gateData">
+          <div class="gate-header">
+            <span class="gate-icon">⚠</span>
+            <span class="gate-title">Human Approval Required</span>
+            <span class="gate-tool-badge" x-text="toolDisplayName(gateData?.tool_to_call)"></span>
+          </div>
+
+          <!-- Plain-English lead — what the agent is actually asking to do -->
+          <p class="gate-lead" x-text="gateData?.proposed_action"></p>
+
+          <div class="gate-body">
+            <div class="gate-field">
+              <label>Current State</label>
+              <p x-text="gateData?.current_state || '—'"></p>
+            </div>
+            <div class="gate-field">
+              <label>Expected Outcome</label>
+              <p x-text="gateData?.expected_outcome || '—'"></p>
+            </div>
+            <div class="gate-field">
+              <label>Risk Assessment</label>
+              <p x-text="gateData?.risk_assessment || '—'"></p>
+            </div>
+            <div class="gate-field" x-show="gateData?.alternative_if_denied">
+              <label>If Denied</label>
+              <p x-text="gateData?.alternative_if_denied"></p>
+            </div>
+          </div>
+
+          <div class="gate-actions">
+            <button class="btn-approve" @click="respondToGate(true)">
+              ✓ Approve
+            </button>
+            <button class="btn-deny" @click="respondToGate(false)">
+              ✗ Deny
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Card -->
+      <div class="result-section" x-show="result" x-transition>
+        <div class="result-card" :class="result?.status">
+          <div class="result-header">
+            <!-- D-62: ESCALATED reworded to reflect responsible outcome, not failure -->
+            <span class="result-status" :class="'status-' + result?.status"
+              x-text="result?.status === 'escalated' ? 'ESCALATED — remediation path generated' : (result?.status || '').toUpperCase()"></span>
+            <span class="result-layer" x-text="result?.root_cause_layer"></span>
+            <span class="result-confidence" x-text="result?.confidence ? `Confidence: ${Math.round((result.confidence || 0) * 100)}%` : ''"></span>
+          </div>
+          <div class="conf-bar-wrap" x-show="result?.confidence">
+            <div class="conf-bar" :style="`width: ${Math.round((result?.confidence || 0) * 100)}%`"></div>
+          </div>
+          <div class="result-hypothesis" x-text="result?.root_cause_hypothesis"></div>
+
+          <!-- What monitoring detected (D-60) -->
+          <template x-if="signals?.signals?.length">
+            <div>
+              <div class="result-section-label">What monitoring detected</div>
+              <div class="result-monitoring">
+                <template x-for="(sig, i) in (signals?.signals || [])" :key="i">
+                  <div x-text="sig.signal_type + ' · ' + (sig.error_message || sig.status || sig.diff_type || '')"></div>
+                </template>
+              </div>
+            </div>
+          </template>
+          <!-- ESCALATED: what to do next -->
+          <template x-if="result?.status === 'escalated' && result?.escalation_reason">
+            <div>
+              <div class="result-section-label">What to do next</div>
+              <div class="result-monitoring" x-text="result.escalation_reason"></div>
+            </div>
+          </template>
+
+          <!-- RESOLVED: what was fixed -->
+          <template x-if="result?.status === 'resolved'">
+            <div>
+              <div class="result-section-label">What was fixed</div>
+              <div class="result-monitoring" x-text="result?.resolution_summary || (result?.actions_taken || []).join(' · ') || 'Incident resolved.'"></div>
+            </div>
+          </template>
+
+          <!-- PARTIAL: actions taken + what's still pending -->
+          <template x-if="result?.status === 'partial'">
+            <div>
+              <div class="result-section-label">Actions taken</div>
+              <div class="result-monitoring" x-text="(result?.actions_taken || []).join(' · ')"></div>
+              <template x-if="result?.actions_pending?.length">
+                <div>
+                  <div class="result-section-label" style="margin-top:0.75rem">Pending human action</div>
+                  <div class="result-monitoring" x-text="(result?.actions_pending || []).join(' · ')"></div>
+                </div>
+              </template>
+            </div>
+          </template>
+
+          <!-- Connect card URL — shown for any status whenever the URL was generated -->
+          <template x-if="connectCardUrl">
+            <a :href="connectCardUrl" target="_blank" rel="noopener" class="connect-card-btn">Complete re-authentication →</a>
+          </template>
+
+          <!-- Actions taken (all statuses, secondary) -->
+          <div class="result-meta" x-show="result?.status === 'escalated' && result?.actions_taken?.length" style="margin-top:0.5rem">
+            <div class="result-meta-row">
+              <strong>Actions taken:</strong>
+              <span x-text="(result?.actions_taken || []).join(' · ')"></span>
+            </div>
+          </div>
+
+          <!-- Recovery confirmed + divider -->
+          <div x-show="result?.recovery_confirmed !== undefined">
+            <div class="result-meta" style="margin-top:0.5rem">
+              <div class="result-meta-row">
+                <strong>Recovery confirmed:</strong>
+                <span x-text="result?.recovery_confirmed ? 'Yes ✓' : 'No'"></span>
+              </div>
+            </div>
+            <hr class="result-divider">
+          </div>
+
+          <!-- Agent dispatch path (actual, derived from live events) -->
+          <template x-if="events.filter(e => e.type === 'agent_dispatch').length">
+            <div>
+              <div class="result-section-label">Agent dispatch path</div>
+              <div class="result-agent-path">
+                <span class="result-agent-node">Orchestrator</span>
+                <template x-for="(e, i) in events.filter(e => e.type === 'agent_dispatch')" :key="e.id">
+                  <span>
+                    <span class="result-agent-arrow">→</span>
+                    <span class="result-agent-node" x-text="e.label"></span>
+                  </span>
+                </template>
+              </div>
+            </div>
+          </template>
+
+          <!-- Tools called — split into Fivetran API and Orchestration -->
+          <template x-if="events.filter(e => e.type === 'tool_call').length">
+            <div>
+              <div class="result-section-label">Tools called</div>
+              <!-- Fivetran API calls -->
+              <template x-if="events.filter(e => e.type === 'tool_call' && e.is_fivetran).length">
+                <div style="display:flex;align-items:baseline;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.35rem">
+                  <span style="font-size:0.65rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap;flex-shrink:0">Fivetran API</span>
+                  <div class="result-tools" style="flex:1;min-width:0">
+                    <template x-for="name in [...new Set(events.filter(e => e.type === 'tool_call' && e.is_fivetran).map(e => e.name))]" :key="name">
+                      <span class="result-tool-chip" x-text="name"></span>
+                    </template>
+                  </div>
+                </div>
+              </template>
+              <!-- Orchestration tools -->
+              <template x-if="events.filter(e => e.type === 'tool_call' && !e.is_fivetran).length">
+                <div style="display:flex;align-items:baseline;gap:0.5rem;flex-wrap:wrap">
+                  <span style="font-size:0.65rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap;flex-shrink:0">Orchestration</span>
+                  <div class="result-tools" style="flex:1;min-width:0">
+                    <template x-for="name in [...new Set(events.filter(e => e.type === 'tool_call' && !e.is_fivetran).map(e => e.name))]" :key="name">
+                      <span class="result-tool-chip" style="color:var(--text-muted);background:rgba(101,109,118,0.08);border-color:rgba(101,109,118,0.2)" x-text="name"></span>
+                    </template>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </template>
+
+          <!-- Reasoning trace (D-62: renamed) -->
+          <div class="result-trace" x-show="result?.reasoning_trace?.length">
+            <div class="result-trace-title">How PRE reached this decision</div>
+            <template x-for="(step, i) in (result?.reasoning_trace || [])" :key="i">
+              <div class="trace-step">
+                <span class="trace-step-num" x-text="(i + 1) + '.'"></span>
+                <span class="trace-step-text" x-text="step"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div><!-- .layout -->
+
+  <script>
+  function demoApp() {
+    return {
+      scenarios: [],
+      activeScenario: null,
+      signals: null,
+      events: [],
+      agentStates: {},   // agent_name → 'active' | 'complete'
+      gateData: null,
+      result: null,
+      connectCardUrl: null,  // D-61: surfaced from create_connect_card tool response
+      isRunning: false,
+      activeRun: null,
+      es: null,
+
+      async init() {
+        const resp = await fetch('/api/scenarios');
+        this.scenarios = await resp.json();
+      },
+
+      // COMMENTED OUT: selectScenario (D-60 — sync button now selects + runs in one action)
+      // async selectScenario(s) {
+      //   if (this.isRunning) return;
+      //   this.activeScenario = s;
+      //   this.events = []; this.result = null; this.gateData = null;
+      //   this.agentStates = {}; this.signals = null;
+      // },
+
+      async runScenario(s) {
+        // D-60: scenario passed directly from dashboard sync button
+        if (this.isRunning) return;
+        this.activeScenario = s;
+        this.events = [];
+        this.result = null;
+        this.gateData = null;
+        this.connectCardUrl = null;
+        this.agentStates = { orchestrator: 'active' };
+        this.signals = null;
+        this.isRunning = true;
+
+        if (this.es) { this.es.close(); this.es = null; }
+
+        let run_id;
+        try {
+          const resp = await fetch('/api/run', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ scenario_id: this.activeScenario.id }),
+          });
+          ({ run_id } = await resp.json());
+          this.activeRun = run_id;
+        } catch (e) {
+          this.isRunning = false;
+          return;
+        }
+
+        this.es = new EventSource(`/api/stream/${run_id}`);
+        this.es.onmessage = (e) => {
+          try {
+            const evt = JSON.parse(e.data);
+            this.handleEvent(evt);
+          } catch (_) {}
+        };
+        this.es.onerror = () => {
+          this.isRunning = false;
+          if (this.es) { this.es.close(); this.es = null; }
+        };
+      },
+
+      handleEvent(event) {
+        const { type, data } = event;
+        const id = Date.now() + Math.random();
+
+        switch (type) {
+          case 'monitoring_sync':
+          case 'monitoring_transform': {
+            // D-67: replace previous running event of same type instead of stacking
+            const last = this.events[this.events.length - 1];
+            if (last && last.type === type && last.status === 'running') {
+              this.events.splice(this.events.length - 1, 1,
+                { type, message: data.message, status: data.status, id: last.id });
+            } else {
+              this.events.push({ type, message: data.message, status: data.status, id });
+            }
+            break;
+          }
+          case 'monitoring_dispatch':
+            if (data.signals?.length) this.signals = { signals: data.signals };
+            this.events.push({ type, message: data.message, id });
+            break;
+          case 'connect_card_url':
+            this.connectCardUrl = data.url;
+            break;
+          case 'thinking':
+            this.events.push({ type, text: data.text, open: false, id });
+            break;
+          case 'tool_call':
+            this.events.push({ type, name: data.name, args: data.args_summary, is_fivetran: !!data.is_fivetran, id });
+            break;
+          case 'tool_response':
+            this.events.push({ type, name: data.name, response: data.response || '', open: false, id });
+            break;
+          case 'agent_dispatch':
+            this.agentStates = { ...this.agentStates, [data.agent]: 'active' };
+            this.events.push({ type, agent: data.agent, label: this.agentLabel(data.agent), id });
+            break;
+          case 'agent_complete':
+            this.agentStates = { ...this.agentStates, [data.agent]: 'complete' };
+            break;
+          case 'gate_open':
+            this.gateData = data;
+            break;
+          case 'gate_closed':
+            this.gateData = null;
+            this.events.push({ type: 'gate_decision', approved: data.approved, tool: data.tool, id });
+            break;
+          case 'text': {
+            const last = this.events[this.events.length - 1];
+            if (last && last.type === 'text') {
+              last.text += data.text;
+            } else {
+              this.events.push({ type: 'text', text: data.text, id });
+            }
+            break;
+          }
+          case 'status':
+            this.events.push({ type: 'status', text: data.message, id });
+            break;
+          case 'result':
+            this.result = data;
+            this.agentStates = { ...this.agentStates, orchestrator: 'complete' };
+            break;
+          case 'error':
+            this.events.push({ type: 'error', message: data.message, id });
+            this.isRunning = false;
+            break;
+          case 'done':
+            this.isRunning = false;
+            if (this.es) { this.es.close(); this.es = null; }
+            break;
+        }
+
+        this.$nextTick(() => {
+          if (this.$refs.trace) {
+            this.$refs.trace.scrollTop = this.$refs.trace.scrollHeight;
+          }
+        });
+      },
+
+      async respondToGate(approved) {
+        const runId = this.activeRun;
+        this.gateData = null;
+        await fetch('/api/gate/respond', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ run_id: runId, approved }),
+        });
+        const decisionText = approved
+          ? 'Operator approved — executing action'
+          : 'Operator denied — routing to escalation';
+        this.events.push({
+          type: 'gate_decision',
+          approved,
+          tool: '',
+          text: decisionText,
+          id: Date.now(),
+        });
+      },
+
+      agentClass(name) {
+        const state = this.agentStates[name];
+        if (state === 'active') return 'active';
+        if (state === 'complete') return 'complete';
+        return '';
+      },
+
+      toolDisplayName(name) {
+        const map = {
+          'create_connect_card':              'Reconnect data source',
+          'sync_connection':                  'Re-sync connection',
+          'update_connection':                'Update connection',
+          'update_connection_schema_config':  'Update schema config',
+          'run_transformation':               'Re-run transformation',
+          'create_transformation':            'Create transformation',
+          'delete_transformation':            'Delete transformation',
+          'pause_connector':                  'Pause connector',
+          'resume_connector':                 'Resume connector',
+        };
+        return map[name] || name;
+      },
+
+      agentLabel(name) {
+        const map = {
+          connector_agent: 'Connector Agent',
+          schema_agent: 'Schema Agent',
+          transformation_agent: 'Transformation Agent',
+          data_quality_agent: 'Data Quality Agent',
+          post_fix_validation: 'Post-Fix Validation',
+        };
+        return map[name] || name;
+      },
+
+      renderEvent(ev) {
+        const esc = (s) => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        switch (ev.type) {
+          case 'monitoring_sync':
+          case 'monitoring_transform': {
+            const cls = ev.status === 'ok' ? 'ok' : ev.status === 'failed' ? 'fail' : ev.status === 'starting' ? 'start' : 'run';
+            return `<span class="ev-monitoring ev-monitoring-${cls}">${esc(ev.message)}</span>`;
+          }
+          case 'monitoring_dispatch':
+            return `<span class="ev-monitoring-dispatch">${esc(ev.message)}</span>`;
+          case 'thinking':
+            return `<span class="ev-thinking" @click="events.find(e=>e.id===${ev.id}).open = !events.find(e=>e.id===${ev.id}).open">
+              [thinking] <span class="ev-thinking-toggle">${ev.open ? '▲ collapse' : '▼ expand'}</span>
+              <div class="ev-thinking-text ${ev.open ? 'open' : ''}">${esc(ev.text)}</div>
+            </span>`;
+          case 'tool_call':
+            return `<span class="ev-tool-call">Tool: <strong>${esc(ev.name)}</strong>${ev.args ? `  <span style="color:var(--text-muted)">${esc(ev.args)}</span>` : ''}</span>`;
+          case 'tool_response':
+            return ev.response
+              ? `<span class="ev-tool-response" style="cursor:pointer" @click="events.find(e=>e.id===${ev.id}).open = !events.find(e=>e.id===${ev.id}).open">
+                  Response: ${esc(ev.name)} <span class="ev-thinking-toggle">${ev.open ? '▲' : '▼'}</span>
+                  <div class="ev-thinking-text ${ev.open ? 'open' : ''}" style="font-family:monospace;font-size:0.8em;white-space:pre-wrap">${esc(ev.response)}</div>
+                </span>`
+              : `<span class="ev-tool-response">Response: ${esc(ev.name)}</span>`;
+          case 'agent_dispatch':
+            return `<span class="ev-agent-dispatch">Dispatching → ${esc(ev.label)}</span>`;
+          case 'agent_complete':
+            return `<span class="ev-agent-complete">Complete: ${esc(ev.agent)}</span>`;
+          case 'text':
+            return `<span class="ev-text">${esc(ev.text)}</span>`;
+          case 'status':
+            return `<span class="ev-status">${esc(ev.text)}</span>`;
+          case 'error':
+            return `<span class="ev-error">${esc(ev.message)}</span>`;
+          case 'gate_decision':
+            return ev.approved
+              ? `<span class="ev-gate-decision-approve">Approved by operator — executing ${esc(ev.tool || '')}</span>`
+              : `<span class="ev-gate-decision-deny">Denied by operator — escalating</span>`;
+          default:
+            return '';
+        }
+      },
+
+      signalSummary(sig) {
+        const parts = [];
+        if (sig.severity) parts.push(`<strong>${sig.severity}</strong>`);
+        if (sig.diff_type) parts.push(sig.diff_type);
+        if (sig.table_name) parts.push(sig.table_name);
+        if (sig.column_name) parts.push(`.${sig.column_name}`);
+        if (sig.metric_type) parts.push(sig.metric_type);
+        if (sig.current_value !== undefined) parts.push(`${sig.current_value}`);
+        if (sig.status) parts.push(sig.status);
+        if (sig.transformation_id) parts.push(sig.transformation_id);
+        return parts.join(' · ');
+      },
+
+    };
+  }
+  </script>
+</body>
+</html>

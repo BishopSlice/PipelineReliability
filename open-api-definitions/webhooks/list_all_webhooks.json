@@ -1,0 +1,26 @@
+{
+  "description": "The endpoint allows you to retrieve the list of existing webhooks available for the current account",
+  "path": "/v1/webhooks",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "cursor",
+      "in": "query",
+      "required": false,
+      "description": "Paging cursor, [read more about pagination](https://fivetran.com/docs/rest-api/pagination)",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "description": "Number of records to fetch per page. Accepts a number in the range 1..1000; the default value is 100.",
+      "schema": {
+        "type": "integer",
+        "format": "int32"
+      }
+    }
+  ]
+}

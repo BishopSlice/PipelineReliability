@@ -1,0 +1,16 @@
+{
+  "description": "Returns public key from SSH key pair associated with the group.",
+  "path": "/v1/groups/{groupId}/public-key",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "groupId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the group within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

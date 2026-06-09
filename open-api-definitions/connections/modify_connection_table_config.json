@@ -1,0 +1,81 @@
+{
+  "description": "Updates the table config within your database schema for an existing connection within your Fivetran account.\n\nFor the NetSuite SuiteAnalytics and Salesforce and Salesforce Sandbox connectors, the 'schemas' map field will always have a single entry with the 'netsuite' or 'salesforce' key, respectively.\n",
+  "path": "/v1/connections/{connectionId}/schemas/{schemaName}/tables/{tableName}",
+  "method": "PATCH",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "schemaName",
+      "in": "path",
+      "required": true,
+      "description": "The database schema name within your destination (different from the connection schema)",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "tableName",
+      "in": "path",
+      "required": true,
+      "description": "The table name within your database schema",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "required": [
+      "enabled"
+    ],
+    "type": "object",
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "description": "The boolean value specifying whether the sync for the table into the destination is enabled."
+      },
+      "columns": {
+        "title": "Columns",
+        "type": "object",
+        "properties": {
+          "column": {
+            "required": [
+              "enabled"
+            ],
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean",
+                "description": "The boolean value specifying whether the sync for the table into the destination is enabled."
+              },
+              "hashed": {
+                "type": "boolean",
+                "description": "The boolean value specifying whether a column should be hashed"
+              },
+              "is_primary_key": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "description": "The set of columns within your table schema config. The `columns` object in the response contains the columns whose `enabled` value has been set by the user after the initial sync."
+      },
+      "sync_mode": {
+        "type": "string",
+        "description": "This field appears in the response if the connection supports switching sync modes for tables",
+        "enum": [
+          "SOFT_DELETE",
+          "HISTORY",
+          "LIVE"
+        ]
+      }
+    }
+  }
+}

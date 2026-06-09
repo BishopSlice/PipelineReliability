@@ -1,0 +1,44 @@
+{
+  "description": "This endpoint allows you to create a new webhook for a given group",
+  "path": "/v1/webhooks/group/{groupId}",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "groupId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the group within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "required": [
+      "events",
+      "url"
+    ],
+    "type": "object",
+    "properties": {
+      "url": {
+        "type": "string",
+        "description": "The endpoint URL where webhook events will be delivered."
+      },
+      "events": {
+        "type": "array",
+        "description": "List of event types that trigger the webhook.",
+        "items": {
+          "type": "string"
+        }
+      },
+      "active": {
+        "type": "boolean",
+        "description": "Indicates if the webhook is enabled to send events immediately upon occurrence."
+      },
+      "secret": {
+        "type": "string",
+        "description": "A secret string used to sign webhook payloads for verification."
+      }
+    }
+  }
+}

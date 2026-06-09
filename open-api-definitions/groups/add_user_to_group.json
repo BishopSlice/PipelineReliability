@@ -1,0 +1,29 @@
+{
+  "description": "Adds an existing user to a group in your Fivetran account.",
+  "path": "/v1/groups/{groupId}/users",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "groupId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the group within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "email": {
+        "type": "string",
+        "description": "The email address that the user has associated with their user profile."
+      },
+      "role": {
+        "type": "string",
+        "description": "The group role that you would like to assign this new user to. Supported group roles: \u2018Manage Destination\u2018, \u2018View Destination\u2018, \u2018Edit Destination\u2018, \u2018Create Connection\u2018, or a custom destination role"
+      }
+    }
+  }
+}

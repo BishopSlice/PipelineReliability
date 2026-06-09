@@ -1,0 +1,16 @@
+{
+  "description": "Upgrades the Quickstart transformation package to latest version if a valid identifier is provided.",
+  "path": "/v1/transformations/{transformationId}/upgrade",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "transformationId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the transformation within the Fivetran system",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

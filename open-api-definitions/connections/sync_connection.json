@@ -1,0 +1,25 @@
+{
+  "description": "Triggers a data sync for an existing connection within your Fivetran account without waiting for the next scheduled sync. This action does not override the standard sync frequency you defined in the Fivetran dashboard.",
+  "path": "/v1/connections/{connectionId}/sync",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "force": {
+        "type": "boolean",
+        "description": "If force is true and the connection is currently syncing, it will stop the sync and re-run it. If force is false, the connection will sync only if it isn't currently syncing. The default value is false"
+      }
+    }
+  }
+}

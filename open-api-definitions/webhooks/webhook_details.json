@@ -1,0 +1,16 @@
+{
+  "description": "This endpoint allows you to retrieve details of the existing webhook for a given identifier",
+  "path": "/v1/webhooks/{webhookId}",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "webhookId",
+      "in": "path",
+      "required": true,
+      "description": "The webhook ID",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

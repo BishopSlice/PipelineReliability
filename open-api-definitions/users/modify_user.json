@@ -1,0 +1,41 @@
+{
+  "description": "Updates information for an existing user within your Fivetran account.",
+  "path": "/v1/users/{userId}",
+  "method": "PATCH",
+  "parameters": [
+    {
+      "name": "userId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the user within the account.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "phone": {
+        "type": "string",
+        "description": "The phone number of the user."
+      },
+      "picture": {
+        "type": "string",
+        "description": "The user's avatar as a URL link (for example, 'http://mycompany.com/avatars/john_white.png') or base64 data URI (for example, 'data:image/png;base64,aHR0cDovL215Y29tcGFueS5jb20vYXZhdGFycy9qb2huX3doaXRlLnBuZw==')"
+      },
+      "role": {
+        "type": "string",
+        "description": "The account role that you would like to assign to the user. You cannot change your own role. "
+      },
+      "family_name": {
+        "type": "string",
+        "description": "The last name of the user."
+      },
+      "given_name": {
+        "type": "string",
+        "description": "The first name of the user."
+      }
+    }
+  }
+}

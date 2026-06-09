@@ -1,0 +1,25 @@
+{
+  "description": "Returns SSH fingerprint details approved for specified destination with specified hash",
+  "path": "/v1/destinations/{destinationId}/fingerprints/{hash}",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "destinationId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the destination within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "hash",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier of the fingerprint (Base64URL encoded hash of the fingerprint).",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

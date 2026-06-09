@@ -1,0 +1,16 @@
+{
+  "description": "Deletes a transformation if a valid identifier is provided.",
+  "path": "/v1/transformations/{transformationId}",
+  "method": "DELETE",
+  "parameters": [
+    {
+      "name": "transformationId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the transformation within the Fivetran system",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

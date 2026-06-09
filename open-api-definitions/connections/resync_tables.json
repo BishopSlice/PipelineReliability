@@ -1,0 +1,30 @@
+{
+  "description": "Triggers a historical sync of all data for multiple schema tables within a connection. This action does not override the standard sync frequency you defined in the Fivetran dashboard.",
+  "path": "/v1/connections/{connectionId}/schemas/tables/resync",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "schema": {
+        "title": "Schema name",
+        "uniqueItems": true,
+        "type": "array",
+        "description": "Schema name",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

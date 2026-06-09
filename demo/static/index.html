@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PRE — Pipeline Reliability Engineer</title>
+  <link rel="icon" href="/static/favicon.png" type="image/png">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f6f8fa;
+      --surface: #ffffff;
+      --border: #d0d7de;
+      --text: #1f2328;
+      --text-muted: #656d76;
+      --text-bright: #1f2328;
+      --blue: #0969da;
+      --green: #1a7f37;
+      --amber: #9a6700;
+      --red: #cf222e;
+      --purple: #8250df;
+      --indigo: #6366f1;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .hero {
+      max-width: 760px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(9, 105, 218, 0.08);
+      border: 1px solid rgba(9, 105, 218, 0.25);
+      color: var(--blue);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.9rem;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      color: var(--text-bright);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 span { color: var(--blue); }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      margin-bottom: 2.5rem;
+      font-weight: 400;
+    }
+
+    .problem {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem 2rem;
+      text-align: left;
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+    }
+
+    .problem p { color: var(--text); font-size: 0.975rem; }
+    .problem p + p { margin-top: 0.75rem; }
+    .problem strong { color: var(--text-bright); }
+
+    /* Agent pipeline diagram */
+    .pipeline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      row-gap: 0.75rem;
+    }
+
+    .pipeline-node {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .pipeline-node.orch { border-color: var(--blue); color: var(--blue); }
+    .pipeline-node.pfv  { border-color: var(--green); color: var(--green); }
+
+    .pipeline-arrow {
+      color: var(--border);
+      font-size: 1rem;
+      padding: 0 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .pipeline-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .pipeline-group .pipeline-node {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.75rem;
+    }
+
+    /* Stats row */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      display: block;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      line-height: 1;
+    }
+
+    .stat-label {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      background: var(--blue);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.85rem 2.25rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.15s;
+      letter-spacing: 0.01em;
+      width: 100%;
+    }
+
+    .cta:hover { opacity: 0.88; transform: translateY(-1px); }
+    .cta:active { transform: translateY(0); }
+
+    .cta-arrow { font-size: 1.1rem; }
+
+    footer {
+      margin-top: 3rem;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="badge">Google ADK · Fivetran MCP · Gemini 3.1</div>
+
+    <h1><span>PRE</span> — Pipeline Reliability<br>Engineer</h1>
+    <p class="subtitle">A multi-agent system for automated data pipeline incident response</p>
+
+    <div class="problem">
+      <p>
+        <strong>The problem:</strong> Fivetran syncs fail silently across connector, schema, transformation,
+        and data quality layers. On-call engineers spend hours triaging root causes before they can act.
+      </p>
+      <p>
+        <strong>The solution:</strong> PRE receives structured failure signals, classifies the root-cause layer
+        with a deterministic scorer, dispatches specialist sub-agents to investigate via live Fivetran API calls,
+        and routes any destructive fix through a <strong>human-in-the-loop approval gate</strong> — before executing
+        on the real system.
+      </p>
+    </div>
+
+    <!-- Pipeline diagram -->
+    <div class="pipeline">
+      <div class="pipeline-node orch">Orchestrator</div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-group">
+        <div class="pipeline-node">Connector Agent</div>
+        <div class="pipeline-node">Schema Agent</div>
+        <div class="pipeline-node">Transformation Agent</div>
+        <div class="pipeline-node">Data Quality Agent</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-node pfv">Post-Fix Validation</div>
+    </div>
+
+    <!-- <div class="stats">
+      <div class="stat">
+        <span class="stat-value">7</span>
+        <span class="stat-label">Scenarios</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">HITL</span>
+        <span class="stat-label">Approval Gates</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">112</span>
+        <span class="stat-label">Automated Tests</span>
+      </div>
+    </div> -->
+
+    <a href="/demo" class="cta">
+      Start Demo <span class="cta-arrow">→</span>
+    </a>
+  </div>
+
+  <!-- <footer>Built with Google Agent Development Kit 2.x · Fivetran MCP Server · Gemini 2.5 Flash</footer> -->
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "description": "Returns information for a given team within your Fivetran account",
+  "path": "/v1/teams/{teamId}",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "teamId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the team within the account.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

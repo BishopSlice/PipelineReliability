@@ -1,0 +1,34 @@
+{
+  "description": "Updates user group membership.",
+  "path": "/v1/users/{userId}/groups/{groupId}",
+  "method": "PATCH",
+  "parameters": [
+    {
+      "name": "userId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the user within the account.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "groupId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the group within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "role": {
+        "type": "string",
+        "description": "The role that you would like to assign to the user "
+      }
+    }
+  }
+}

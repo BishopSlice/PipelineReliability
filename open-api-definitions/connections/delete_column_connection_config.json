@@ -1,0 +1,43 @@
+{
+  "description": "Marks a blocked column for deletion from your destination table. The column will be dropped during the next sync.\n\nFor the NetSuite SuiteAnalytics and Salesforce and Salesforce Sandbox connectors, the 'schemas' map field will always have a single entry with the 'netsuite' or 'salesforce' key, respectively.\n",
+  "path": "/v1/connections/{connectionId}/schemas/{schemaName}/tables/{tableName}/columns/{columnName}",
+  "method": "DELETE",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "schemaName",
+      "in": "path",
+      "required": true,
+      "description": "The database schema name within your destination (different from the connection schema)",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "tableName",
+      "in": "path",
+      "required": true,
+      "description": "The table name within your database schema",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "columnName",
+      "in": "path",
+      "required": true,
+      "description": "The column name within your table",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

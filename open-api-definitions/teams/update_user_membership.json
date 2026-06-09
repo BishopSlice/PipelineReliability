@@ -1,0 +1,37 @@
+{
+  "description": "Updates a user membership in a team.",
+  "path": "/v1/teams/{teamId}/users/{userId}",
+  "method": "PATCH",
+  "parameters": [
+    {
+      "name": "teamId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the team within the account.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "userId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the user within the account.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "required": [
+      "role"
+    ],
+    "type": "object",
+    "properties": {
+      "role": {
+        "type": "string",
+        "description": "The user's role within the team"
+      }
+    }
+  }
+}

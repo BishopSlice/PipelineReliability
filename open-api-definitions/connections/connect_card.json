@@ -1,0 +1,37 @@
+{
+  "description": "Generates the Connect Card URI for the connection",
+  "path": "/v1/connections/{connectionId}/connect-card",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "connect_card_config": {
+        "required": [
+          "redirect_uri"
+        ],
+        "type": "object",
+        "properties": {
+          "redirect_uri": {
+            "type": "string",
+            "description": "The URI on your site we redirect the end user to after successful setup. The URI must start with the `https` or `http` prefix. "
+          },
+          "hide_setup_guide": {
+            "type": "boolean",
+            "description": "An optional parameter that lets you hide the embedded setup guide in the Connect Card."
+          }
+        }
+      }
+    }
+  }
+}

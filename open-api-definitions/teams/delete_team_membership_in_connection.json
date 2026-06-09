@@ -1,0 +1,25 @@
+{
+  "description": "Removes team membership in a connection.",
+  "path": "/v1/teams/{teamId}/connections/{connectionId}",
+  "method": "DELETE",
+  "parameters": [
+    {
+      "name": "teamId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the team within the account.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "description": "Updates the schema config for an existing connection within your Fivetran account.\n\n> NOTE: For backward compatibility, the response may contain the 'enable_new_by_default' boolean field. It defines whether new schemas and tables discovered in the source are synced. The value is 'true' if you specify 'ALLOW_ALL' as a value of 'schema_change_handling'. In the future API versions, we may remove this field.\n>\n> The response contains all known schemas and tables. Also, it contains columns whose state has ever been set by the user. For more information, see also the [Connection Schema config](https://fivetran.com/docs/rest-api/tutorials/connection-schema-configuration-use-cases) tutorial.\n",
+  "path": "/v1/connections/{connectionId}/schemas",
+  "method": "PATCH",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "schemas": {
+        "title": "Schemas",
+        "type": "object",
+        "properties": {
+          "schema": {
+            "required": [
+              "enabled"
+            ],
+            "type": "object",
+            "properties": {
+              "enabled": {
+                "type": "boolean",
+                "description": "The boolean value specifying whether the sync for the table into the destination is enabled."
+              },
+              "tables": {
+                "title": "Tables",
+                "type": "object",
+                "properties": {
+                  "table": {
+                    "required": [
+                      "enabled"
+                    ],
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "The boolean value specifying whether the sync for the table into the destination is enabled."
+                      },
+                      "columns": {
+                        "title": "Columns",
+                        "type": "object",
+                        "properties": {
+                          "column": {
+                            "required": [
+                              "enabled"
+                            ],
+                            "type": "object",
+                            "properties": {
+                              "enabled": {
+                                "type": "boolean",
+                                "description": "The boolean value specifying whether the sync for the table into the destination is enabled."
+                              },
+                              "hashed": {
+                                "type": "boolean",
+                                "description": "The boolean value specifying whether a column should be hashed"
+                              },
+                              "is_primary_key": {
+                                "type": "boolean"
+                              }
+                            }
+                          }
+                        },
+                        "description": "The set of columns within your table schema config. The `columns` object in the response contains the columns whose `enabled` value has been set by the user after the initial sync."
+                      },
+                      "sync_mode": {
+                        "type": "string",
+                        "description": "This field appears in the response if the connection supports switching sync modes for tables",
+                        "enum": [
+                          "SOFT_DELETE",
+                          "HISTORY",
+                          "LIVE"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "description": "The set of tables within your database schema config."
+              }
+            }
+          }
+        },
+        "description": "The set of schemas within your connection schema config."
+      },
+      "is_type_locked": {
+        "type": "boolean",
+        "description": "The boolean value specifying whether the connection\u2019s destination data types are locked to the types determined from the source. If enabled before or immediately after the initial sync, the [type lock](https://fivetran.com/docs/using-fivetran/features/type-locking) captures the types determined at the initial sync; if enabled later, it captures the types determined on the first sync after enabling. Re-enabling an already-enabled lock does not change previously locked types."
+      },
+      "schema_change_handling": {
+        "type": "string",
+        "description": "The possible values for the schema_change_handling parameter are as follows: <br /> ALLOW_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are included in syncs <br /> ALLOW_COLUMNS - all new schemas and tables which appear in the source after the initial setup are excluded from syncs, but new columns are included <br /> BLOCK_ALL - all new schemas, tables, and columns which appear in the source after the initial setup are excluded from syncs",
+        "enum": [
+          "ALLOW_ALL",
+          "ALLOW_COLUMNS",
+          "BLOCK_ALL"
+        ]
+      }
+    }
+  }
+}

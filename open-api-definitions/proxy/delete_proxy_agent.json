@@ -1,0 +1,16 @@
+{
+  "description": "Deletes the specified proxy agent from your Fivetran account.",
+  "path": "/v1/proxy/{agentId}",
+  "method": "DELETE",
+  "parameters": [
+    {
+      "name": "agentId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the proxy agent within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "description": "Updates the secret value and expired_at date for an existing system key within your Fivetran account.",
+  "path": "/v1/system-keys/{keyId}/rotate",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "keyId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the system key within your Fivetran account.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ],
+  "request_body_schema": {
+    "type": "object",
+    "properties": {
+      "expiration_period": {
+        "type": "string",
+        "description": "The system key's expiration period",
+        "enum": [
+          "ONE_WEEK",
+          "ONE_MONTH",
+          "THREE_MONTHS",
+          "SIX_MONTHS",
+          "INFINITE"
+        ]
+      }
+    }
+  }
+}

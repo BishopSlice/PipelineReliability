@@ -1,0 +1,16 @@
+{
+  "description": "Runs the setup tests for an existing group-level [logging service](/docs/logs/external-logs) within your Fivetran account.",
+  "path": "/v1/external-logging/{logId}/test",
+  "method": "POST",
+  "parameters": [
+    {
+      "name": "logId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the log service within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

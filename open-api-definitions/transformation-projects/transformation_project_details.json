@@ -1,0 +1,16 @@
+{
+  "description": "Returns transformation project details if a valid identifier was provided.",
+  "path": "/v1/transformation-projects/{projectId}",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "projectId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the transformation project within the Fivetran system",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}

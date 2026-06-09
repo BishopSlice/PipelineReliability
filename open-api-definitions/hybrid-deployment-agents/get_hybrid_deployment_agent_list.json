@@ -1,0 +1,33 @@
+{
+  "description": "Returns list of all Hybrid Deployment Agents within your Fivetran account, along with usage. Optionally filtered to a single group.",
+  "path": "/v1/hybrid-deployment-agents",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "groupId",
+      "in": "query",
+      "required": false,
+      "description": "The Fivetran Group Id.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "cursor",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+        "type": "integer",
+        "format": "int32"
+      }
+    }
+  ]
+}

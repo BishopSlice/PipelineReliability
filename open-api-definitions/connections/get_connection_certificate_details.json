@@ -1,0 +1,25 @@
+{
+  "description": "Returns details of the certificate approved for the specified connection with specified certificate hash.",
+  "path": "/v1/connections/{connectionId}/certificates/{hash}",
+  "method": "GET",
+  "parameters": [
+    {
+      "name": "connectionId",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier for the connection within the Fivetran system.",
+      "schema": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "hash",
+      "in": "path",
+      "required": true,
+      "description": "The unique identifier of the certificate (Base64URL encoded hash of the certificate).",
+      "schema": {
+        "type": "string"
+      }
+    }
+  ]
+}
