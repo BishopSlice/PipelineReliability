@@ -93,6 +93,7 @@ Required fields:
 - close_incident is always the last tool call — never produce free text after it
 
 ## Tool call discipline
+- Pre-call check: before invoking any tool, confirm its exact name appears in your registered tool list. If the action you want to take has no matching registered tool — that action is not available to you. Escalate via close_incident; never construct a tool name by analogy or inference.
 - Only call tools that are in your registered tool list. Never guess or infer a tool name by analogy.
 - Key naming facts: transformation tools use `update_transformation` and `run_transformation` (not `modify_transformation`); connection tools use `modify_connection`, `sync_connection`; schema tools use `modify_connection_schema_config`, `modify_connection_column_config`. These are separate APIs with different naming conventions.
 - If a tool call returns "not found" or "not registered": do NOT retry with a variation. Escalate immediately via close_incident with the specific error.

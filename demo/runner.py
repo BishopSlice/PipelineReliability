@@ -161,6 +161,7 @@ async def run_incident_streaming(
 
     timeout = int(os.getenv("RUN_TIMEOUT_SECONDS", "360"))
     _agent_start = time.monotonic()
+    result = None  # initialise so finally can always reference it
     try:
         result = await asyncio.wait_for(
             _streaming_agent_loop(
@@ -190,23 +191,48 @@ async def run_incident_streaming(
             "created_at": _dt.datetime.utcnow().isoformat(),
         }
         await _tracking_emit("result", result)
+    except BaseException as _exc:
+        # Non-timeout exception from _streaming_agent_loop (e.g. unhandled API error).
+        # Build a minimal result so _persist_metrics can still record the run, then re-raise.
+        if not isinstance(_exc, (SystemExit, KeyboardInterrupt, GeneratorExit)):
+            metrics.error_occurred = True
+            if result is None:
+                result = {
+                    "incident_id": str(_uuid.uuid4()),
+                    "status": "escalated",
+                    "root_cause_layer": "unknown",
+                    "root_cause_hypothesis": "Agent loop raised an unexpected exception.",
+                    "confidence": 0.0,
+                    "actions_taken": [],
+                    "actions_pending": ["Manual investigation required."],
+                    "recovery_confirmed": False,
+                    "total_duration_seconds": 0,
+                    "reasoning_trace": [str(_exc)[:200]],
+                    "escalation_reason": f"Unexpected error: {type(_exc).__name__}: {str(_exc)[:120]}",
+                    "created_at": _dt.datetime.utcnow().isoformat(),
+                }
+        raise
     finally:
         metrics.agent_phase_ms = int((time.monotonic() - _agent_start) * 1000)
         _gate_bridge.unregister(bridge_key)
-        # D-45: close root span and any leaked agent spans (e.g. on timeout)
+        # D-45: close root span and any leaked agent spans
         for span in metrics._active_spans.values():
             _span_end(span, error=True)
         metrics._active_spans.clear()
         _span_end(_run_span, error=metrics.error_occurred)
+        # Persist regardless of how the run ended — result is always set here
+        if result is not None:
+            _persist_metrics(metrics, result)
 
-    _persist_metrics(metrics, result)
     return result
 
 
 def _persist_metrics(metrics: RunMetrics, result: dict) -> None:
-    """Write run metrics to the eval SQLite DB, then check P95 baselines. Best-effort."""
+    """Write run metrics to the eval DB, then check P95 baselines. Best-effort."""
     try:
         from demo.db import insert_run, get_baselines
+        import logging as _dblog
+        _dblog.getLogger(__name__).info("persist_metrics: writing run %s to eval DB", metrics.run_id)
         row = {
             "run_id":                metrics.run_id,
             "scenario_id":           metrics.scenario_id,
@@ -236,8 +262,10 @@ def _persist_metrics(metrics: RunMetrics, result: dict) -> None:
         }
         insert_run(row)
         _check_baselines(row)
-    except Exception:
-        pass  # eval DB is best-effort; never crash a run because of it
+    except Exception as _e:
+        import logging as _dblog
+        _dblog.getLogger(__name__).error("persist_metrics FAILED for run %s: %s: %s",
+                                          metrics.run_id, type(_e).__name__, str(_e)[:300])
 
 
 _OUTPUT_TOKEN_BUDGET = int(os.getenv("OUTPUT_TOKEN_BUDGET", "8000"))

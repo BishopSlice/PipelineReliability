@@ -635,6 +635,56 @@
       transition: width 0.6s ease;
     }
 
+    /* Pipeline tracker bar */
+    .pipeline-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      row-gap: 0.4rem;
+      gap: 0;
+      padding: 0.6rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      min-height: 2.4rem;
+    }
+
+    .pl-node {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+
+    .pl-node.active { color: var(--blue); }
+    .pl-node.complete { color: var(--green); }
+    .pl-node.error { color: var(--red); }
+
+    .pl-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--border);
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .pl-node.active  .pl-dot { background: var(--blue); animation: pl-pulse 1.4s ease-in-out infinite; }
+    .pl-node.complete .pl-dot { background: var(--green); }
+    .pl-node.error   .pl-dot { background: var(--red); }
+
+    .pl-arrow { color: var(--border); font-size: 0.7rem; padding: 0 0.35rem; }
+
+    @keyframes pl-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.45; transform: scale(0.8); }
+    }
+
     /* Scrollbar */
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -704,6 +754,25 @@
     <!-- Main -->
     <main>
 
+
+      <!-- Pipeline tracker — all nodes always visible; state-driven highlighting -->
+      <div class="pipeline-bar" x-show="isRunning || result">
+        <div class="pl-node" :class="monitorState"><div class="pl-dot"></div><span>Monitor</span></div>
+        <span class="pl-arrow">→</span>
+        <div class="pl-node" :class="orchestratorState"><div class="pl-dot"></div><span>Orchestrator</span></div>
+        <span class="pl-arrow">→</span>
+        <div class="pl-node" :class="connectorState"><div class="pl-dot"></div><span>Connector</span></div>
+        <span class="pl-arrow">→</span>
+        <div class="pl-node" :class="schemaState"><div class="pl-dot"></div><span>Schema</span></div>
+        <span class="pl-arrow">→</span>
+        <div class="pl-node" :class="transformationState"><div class="pl-dot"></div><span>Transformation</span></div>
+        <span class="pl-arrow">→</span>
+        <div class="pl-node" :class="dqState"><div class="pl-dot"></div><span>Data Quality</span></div>
+        <span class="pl-arrow">→</span>
+        <div class="pl-node" :class="gateState"><div class="pl-dot"></div><span>HITL Gate</span></div>
+        <span class="pl-arrow">→</span>
+        <div class="pl-node" :class="postFixState"><div class="pl-dot"></div><span>Post-Fix</span></div>
+      </div>
 
       <!-- Trace area -->
       <div class="trace-area" x-ref="trace">
@@ -914,6 +983,15 @@
       isRunning: false,
       activeRun: null,
       es: null,
+      // Pipeline tracker — individual states for each fixed node
+      monitorState:         'pending',
+      orchestratorState:    'pending',
+      connectorState:       'pending',
+      schemaState:          'pending',
+      transformationState:  'pending',
+      dqState:              'pending',
+      gateState:            'pending',
+      postFixState:         'pending',
 
       async init() {
         const resp = await fetch('/api/scenarios');
@@ -939,6 +1017,15 @@
         this.agentStates = { orchestrator: 'active' };
         this.signals = null;
         this.isRunning = true;
+        // Reset pipeline tracker — all nodes visible from start, monitor active immediately
+        this.monitorState        = 'active';
+        this.orchestratorState   = 'pending';
+        this.connectorState      = 'pending';
+        this.schemaState         = 'pending';
+        this.transformationState = 'pending';
+        this.dqState             = 'pending';
+        this.gateState           = 'pending';
+        this.postFixState        = 'pending';
 
         if (this.es) { this.es.close(); this.es = null; }
 
@@ -989,6 +1076,8 @@
           case 'monitoring_dispatch':
             if (data.signals?.length) this.signals = { signals: data.signals };
             this.events.push({ type, message: data.message, id });
+            this.monitorState = 'complete';
+            this.orchestratorState = 'active';
             break;
           case 'connect_card_url':
             this.connectCardUrl = data.url;
@@ -1002,18 +1091,45 @@
           case 'tool_response':
             this.events.push({ type, name: data.name, response: data.response || '', open: false, id });
             break;
-          case 'agent_dispatch':
+          case 'agent_dispatch': {
             this.agentStates = { ...this.agentStates, [data.agent]: 'active' };
             this.events.push({ type, agent: data.agent, label: this.agentLabel(data.agent), id });
+            // Pipeline tracker — map agent name to its fixed node
+            const _agentStateMap = {
+              connector_agent:       'connectorState',
+              schema_agent:          'schemaState',
+              transformation_agent:  'transformationState',
+              transformation_runner: 'transformationState',
+              data_quality_agent:    'dqState',
+              dq_validator:          'dqState',
+              post_fix_validation:   'postFixState',
+            };
+            const _key = _agentStateMap[data.agent];
+            if (_key) this[_key] = 'active';
             break;
-          case 'agent_complete':
+          }
+          case 'agent_complete': {
             this.agentStates = { ...this.agentStates, [data.agent]: 'complete' };
+            const _agentStateMap2 = {
+              connector_agent:       'connectorState',
+              schema_agent:          'schemaState',
+              transformation_agent:  'transformationState',
+              transformation_runner: 'transformationState',
+              data_quality_agent:    'dqState',
+              dq_validator:          'dqState',
+              post_fix_validation:   'postFixState',
+            };
+            const _key2 = _agentStateMap2[data.agent];
+            if (_key2) this[_key2] = 'complete';
             break;
+          }
           case 'gate_open':
             this.gateData = data;
+            this.gateState = 'active';
             break;
           case 'gate_closed':
             this.gateData = null;
+            this.gateState = 'complete';
             this.events.push({ type: 'gate_decision', approved: data.approved, tool: data.tool, id });
             break;
           case 'text': {
@@ -1031,6 +1147,11 @@
           case 'result':
             this.result = data;
             this.agentStates = { ...this.agentStates, orchestrator: 'complete' };
+            // Settle pipeline tracker — active → complete, pending stays pending
+            ['monitorState','orchestratorState','connectorState','schemaState',
+             'transformationState','dqState','gateState','postFixState'].forEach(k => {
+              if (this[k] === 'active') this[k] = 'complete';
+            });
             break;
           case 'error':
             this.events.push({ type: 'error', message: data.message, id });
