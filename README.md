@@ -6,6 +6,10 @@ A multi-agent system that investigates, diagnoses, and fixes Fivetran data pipel
 
 ---
 
+https://github.com/user-attachments/assets/12dad56a-f9a2-4d66-a3b1-f69919c64149
+
+
+
 ## Jump to any section:
 
   1. [The Problem](#1-the-problem)
